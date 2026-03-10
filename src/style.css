@@ -3,6 +3,16 @@
 @tailwind utilities;
 
 /* ============================================================================
+   GLOBAL MODAL SCROLL LOCK
+   Prevents background page scroll whenever any overlay modal is open.
+   Uses CSS :has() — supported in Chrome 105+, Safari 15.4+, Firefox 121+
+   ============================================================================ */
+body:has(.fixed.inset-0:not(.hidden)) #main-content,
+body:has(.fixed.inset-0:not(.hidden)) .module-container {
+  overflow: hidden;
+}
+
+/* ============================================================================
    CSS CUSTOM PROPERTIES — Premium Design System
    ============================================================================ */
 :root {

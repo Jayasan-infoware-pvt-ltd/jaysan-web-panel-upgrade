@@ -130,21 +130,6 @@ export async function initExpenditure(container, storeId = null) {
             </div>
         </div>
 
-        <!-- GLOBAL FLOATING POPUP MENU EXPENDITURE -->
-        <div id="exp-action-menu" class="hidden fixed z-[60] bg-white rounded-lg shadow-xl border border-slate-100 w-40 py-1 animate-in fade-in zoom-in-95 duration-100">
-            <button id="exp-popup-view" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2">
-                <i data-lucide="eye" class="w-4 h-4"></i> View Detail
-            </button>
-            <div class="border-t border-slate-100 my-1"></div>
-            <button id="exp-popup-edit" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2">
-                <i data-lucide="edit-2" class="w-4 h-4"></i> Edit
-            </button>
-            <div class="border-t border-slate-100 my-1"></div>
-            <button id="exp-popup-delete" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2">
-                <i data-lucide="trash-2" class="w-4 h-4"></i> Delete
-            </button>
-        </div>
-
         <!-- DETAIL MODAL (POP SCREEN) -->
         <div id="detail-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
             <div id="detail-modal-content" class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-transform duration-300">
@@ -204,36 +189,69 @@ export async function initExpenditure(container, storeId = null) {
         </div>
     `;
 
-    // Global Menu Logic
-    const popupMenu = container.querySelector('#exp-action-menu');
+    // Global Menu Logic — body-level popup (same pattern as other modules)
+    let expPopupMenu = document.getElementById('exp-action-menu');
+    if (expPopupMenu) expPopupMenu.remove();
+
+    expPopupMenu = document.createElement('div');
+    expPopupMenu.id = 'exp-action-menu';
+    expPopupMenu.className = 'hidden fixed z-[500] bg-white rounded-lg shadow-lg border border-slate-100 w-44 py-1';
+    expPopupMenu.style.transition = 'opacity 150ms ease, transform 150ms ease';
+    expPopupMenu.innerHTML = `
+        <button id="exp-popup-view" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            View Detail
+        </button>
+        <div class="border-t border-slate-100 my-1"></div>
+        <button id="exp-popup-edit" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+            Edit
+        </button>
+        <div class="border-t border-slate-100 my-1"></div>
+        <button id="exp-popup-delete" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+            Delete
+        </button>
+    `;
+    document.body.appendChild(expPopupMenu);
+
+    // Alias so existing code references work
+    const popupMenu = expPopupMenu;
     let currentActiveId = null;
 
     function showPopup(btn, id) {
         currentActiveId = id;
 
         const rect = btn.getBoundingClientRect();
-        const menuHeight = 150; // Approximated height
-        const spaceBelow = window.innerHeight - rect.bottom;
 
+        popupMenu.style.opacity = '0';
+        popupMenu.style.transform = 'scale(0.95)';
         popupMenu.classList.remove('hidden');
 
-        // Horizontal: Left align with button logic
-        let left = rect.right - 140;
+        const menuHeight = popupMenu.offsetHeight;
+        const menuWidth = popupMenu.offsetWidth;
 
-        // Vertical: Flip if not enough space
-        if (spaceBelow < menuHeight) {
-            popupMenu.style.top = `${rect.top - menuHeight}px`;
-            popupMenu.style.transformOrigin = 'bottom right';
-        } else {
-            popupMenu.style.top = `${rect.bottom + 5}px`;
-            popupMenu.style.transformOrigin = 'top right';
+        let top = rect.bottom + 5;
+        if (top + menuHeight > window.innerHeight) {
+            top = rect.top - menuHeight - 5;
         }
 
+        let left = rect.right - menuWidth;
+        if (left < 10) left = 10;
+
+        popupMenu.style.top = `${top}px`;
         popupMenu.style.left = `${left}px`;
+
+        requestAnimationFrame(() => {
+            popupMenu.style.opacity = '1';
+            popupMenu.style.transform = 'scale(1)';
+        });
     }
 
     function hidePopup() {
         popupMenu.classList.add('hidden');
+        popupMenu.style.opacity = '';
+        popupMenu.style.transform = '';
         currentActiveId = null;
     }
 
@@ -536,7 +554,7 @@ export async function initExpenditure(container, storeId = null) {
     // --- Global Menu Actions ---
     
     // 1. Edit Action
-    container.querySelector('#exp-popup-edit').addEventListener('click', (e) => {
+    expPopupMenu.querySelector('#exp-popup-edit').addEventListener('click', (e) => {
         e.stopPropagation();
         if (currentActiveId) {
             const record = allExpenditures.find(d => d.id === currentActiveId);
@@ -566,7 +584,7 @@ export async function initExpenditure(container, storeId = null) {
     });
 
     // 2. Delete Action
-    container.querySelector('#exp-popup-delete').addEventListener('click', async (e) => {
+    expPopupMenu.querySelector('#exp-popup-delete').addEventListener('click', async (e) => {
         e.stopPropagation();
         if (currentActiveId) {
             hidePopup();
@@ -579,7 +597,7 @@ export async function initExpenditure(container, storeId = null) {
     });
 
     // 3. View Action (Modified to open Modal)
-    container.querySelector('#exp-popup-view').addEventListener('click', (e) => {
+    expPopupMenu.querySelector('#exp-popup-view').addEventListener('click', (e) => {
         e.stopPropagation();
         if (currentActiveId) {
             const rec = allExpenditures.find(d => d.id === currentActiveId);

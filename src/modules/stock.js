@@ -40,12 +40,13 @@ export async function initStock(container, storeId = null) {
                             <th class="p-4 font-semibold">Category</th>
                             <th class="p-4 font-semibold">Price (₹)</th>
                             <th class="p-4 font-semibold">Quantity</th>
+                            <th class="p-4 font-semibold">Created</th>
                             <th class="p-4 font-semibold">Last Updated</th>
                             <th class="p-4 font-semibold text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="stock-table-body" class="text-slate-700 divide-y divide-slate-100">
-                        <tr><td colspan="7" class="p-4 text-center">Loading...</td></tr>
+                        <tr><td colspan="8" class="p-4 text-center">Loading...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -53,7 +54,7 @@ export async function initStock(container, storeId = null) {
 
         <!-- Modal Template -->
         <div id="product-modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-[100] backdrop-blur-sm">
-            <div class="bg-white rounded-xl p-8 w-full max-w-md shadow-2xl transform transition-all scale-100 ring-1 ring-black/5 max-h-[90vh] overflow-y-auto">
+            <div class="bg-white rounded-xl p-8 w-full max-w-md shadow-2xl transform transition-all scale-100 ring-1 ring-black/5 max-h-[90vh] overflow-y-auto overscroll-contain">
                 <h3 id="modal-title" class="text-xl font-bold mb-4">Add Product</h3>
                 <form id="product-form" class="space-y-4">
                     <input type="hidden" id="product-id">
@@ -152,6 +153,26 @@ export async function initStock(container, storeId = null) {
                         <button type="submit" id="save-product-btn" class="btn-primary">Save Product</button>
                     </div>
                 </form>
+
+                <!-- Meta Info Panel (shown in view mode) -->
+                <div id="product-meta-panel" class="hidden mt-4 pt-4 border-t border-slate-100 space-y-3">
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <span class="text-xs font-bold text-slate-400 uppercase">Created</span>
+                            <div id="meta-created" class="text-slate-700 font-medium mt-0.5">—</div>
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold text-slate-400 uppercase">Last Updated</span>
+                            <div id="meta-updated" class="text-slate-700 font-medium mt-0.5">—</div>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold text-slate-400 uppercase mb-2 block">Update History</span>
+                        <div id="product-history-list" class="space-y-1 max-h-48 overflow-y-auto overscroll-contain text-xs text-slate-600">
+                            <div class="text-slate-400 italic">Loading history...</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -236,7 +257,7 @@ export async function initStock(container, storeId = null) {
 
     function renderTable(items) {
         if (items.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400">No products found</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-slate-400">No products found</td></tr>`;
             return;
         }
         tbody.innerHTML = items.map(p => {
@@ -267,7 +288,10 @@ export async function initStock(container, storeId = null) {
                     </span>
                 </td>
                 <td class="p-4 text-sm text-slate-500">
-                    ${p.updated_at ? new Date(p.updated_at).toLocaleString() : (p.created_at ? new Date(p.created_at).toLocaleString() : '-')}
+                    ${p.created_at ? new Date(p.created_at).toLocaleDateString() : '-'}
+                </td>
+                <td class="p-4 text-sm text-slate-500">
+                    ${p.updated_at ? new Date(p.updated_at).toLocaleString() : '-'}
                 </td>
                 <td class="p-4 text-right">
                     <button class="menu-trigger p-2 rounded-full hover:bg-slate-200 text-slate-400 transition-colors" data-id="${p.id}">
@@ -670,6 +694,8 @@ export async function initStock(container, storeId = null) {
         const imageAddArea = container.querySelector('#product-image-input').parentElement; // The label wrapper
         const addUrlBtn = container.querySelector('#add-image-url-btn');
 
+        const metaPanel = container.querySelector('#product-meta-panel');
+
         if (isView) {
             allInteractables.forEach(i => {
                 i.disabled = true;
@@ -701,6 +727,39 @@ export async function initStock(container, storeId = null) {
             // Hide remove buttons on images
             galleryPreview.querySelectorAll('button').forEach(b => b.classList.add('hidden'));
 
+            // Show meta panel with dates + history
+            if (metaPanel) {
+                metaPanel.classList.remove('hidden');
+                container.querySelector('#meta-created').textContent =
+                    data.created_at ? new Date(data.created_at).toLocaleString() : '—';
+                container.querySelector('#meta-updated').textContent =
+                    data.updated_at ? new Date(data.updated_at).toLocaleString() : '—';
+
+                // Load history
+                const historyList = container.querySelector('#product-history-list');
+                supabase.from('stock_history')
+                    .select('*')
+                    .eq('product_id', data.id)
+                    .order('changed_at', { ascending: false })
+                    .limit(30)
+                    .then(({ data: history, error }) => {
+                        if (error || !history || history.length === 0) {
+                            historyList.innerHTML = '<div class="text-slate-400 italic">No history recorded yet.</div>';
+                            return;
+                        }
+                        historyList.innerHTML = history.map(h => `
+                            <div class="flex items-start gap-2 py-1.5 border-b border-slate-50 last:border-0">
+                                <span class="mt-0.5 w-2 h-2 rounded-full bg-indigo-400 flex-shrink-0"></span>
+                                <div class="flex-1">
+                                    <span class="font-medium text-slate-700">${h.change_type}</span>
+                                    ${h.old_value && h.new_value ? `<span class="text-slate-400"> · ${h.old_value} → ${h.new_value}</span>` : ''}
+                                    ${h.changed_by ? `<span class="text-slate-400"> · by ${h.changed_by}</span>` : ''}
+                                    <div class="text-slate-400 text-[10px] mt-0.5">${new Date(h.changed_at).toLocaleString()}</div>
+                                </div>
+                            </div>
+                        `).join('');
+                    });
+            }
         } else {
             allInteractables.forEach(i => {
                 i.disabled = false;
@@ -720,6 +779,9 @@ export async function initStock(container, storeId = null) {
 
             // Show remove buttons
             galleryPreview.querySelectorAll('button').forEach(b => b.classList.remove('hidden'));
+
+            // Hide meta panel in edit/add mode
+            if (metaPanel) metaPanel.classList.add('hidden');
         }
 
         const serials = ((isEdit || isView) && data.serial_number) ? data.serial_number.split(',') : [];
@@ -821,12 +883,54 @@ export async function initStock(container, storeId = null) {
 
             let error;
             if (id) {
+                // Grab old product for history diff
+                const oldProduct = products.find(p => p.id === id);
                 payload.updated_at = new Date().toISOString();
                 const { error: err } = await supabase.from('products').update(payload).eq('id', id);
                 error = err;
+
+                if (!error && oldProduct) {
+                    const historyEntries = [];
+                    if (oldProduct.quantity !== quantity) {
+                        historyEntries.push({
+                            product_id: id, store_id: storeId,
+                            change_type: 'Quantity Update',
+                            old_value: String(oldProduct.quantity),
+                            new_value: String(quantity),
+                        });
+                    }
+                    if (oldProduct.price !== price) {
+                        historyEntries.push({
+                            product_id: id, store_id: storeId,
+                            change_type: 'Price Update',
+                            old_value: `₹${oldProduct.price}`,
+                            new_value: `₹${price}`,
+                        });
+                    }
+                    if (historyEntries.length === 0) {
+                        historyEntries.push({
+                            product_id: id, store_id: storeId,
+                            change_type: 'Product Edited',
+                            old_value: null, new_value: null,
+                        });
+                    }
+                    // Fire-and-forget history inserts
+                    supabase.from('stock_history').insert(historyEntries).then(({ error: hErr }) => {
+                        if (hErr) console.warn('History insert error:', hErr.message);
+                    });
+                }
             } else {
-                const { error: err } = await supabase.from('products').insert([payload]);
+                const { error: err, data: inserted } = await supabase.from('products').insert([payload]).select().single();
                 error = err;
+                if (!error && inserted) {
+                    supabase.from('stock_history').insert([{
+                        product_id: inserted.id, store_id: storeId,
+                        change_type: 'Product Created',
+                        old_value: null, new_value: name,
+                    }]).then(({ error: hErr }) => {
+                        if (hErr) console.warn('History insert error:', hErr.message);
+                    });
+                }
             }
 
             if (error) throw error;

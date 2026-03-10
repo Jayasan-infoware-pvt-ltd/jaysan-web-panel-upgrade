@@ -239,6 +239,8 @@ export async function initRepairHistory(container, storeId = null) {
     };
     document.addEventListener('click', handleGlobalClick);
 
+    let repairs = [];
+
     // --- Modal Logic ---
     const modal = container.querySelector('#detail-modal');
     const modalContent = container.querySelector('#modal-content');
