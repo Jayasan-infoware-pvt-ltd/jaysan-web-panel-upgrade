@@ -175,12 +175,12 @@ export async function initStoreManagement(container) {
                             <div>
                                 <h4 class="font-bold text-slate-800 text-sm">${s.name}</h4>
                                 <p class="text-xs text-slate-500 flex items-center gap-1">
-                                    <i data-lucide="map-pin" class="w-3 h-3"></i> ${s.location}
+                                    <i data-lucide="map-pin" class="w-3 h-3"></i> ${s.location || 'Default Location'}
                                 </p>
                             </div>
                         </div>
-                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${s.is_active ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}">
-                            ${s.is_active ? 'Active' : 'Inactive'}
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${(s.is_active === false) ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}">
+                            ${(s.is_active === false) ? 'Inactive' : 'Active'}
                         </span>
                     </div>
                     ${s.address ? `<p class="text-xs text-slate-400 mt-3 truncate">${s.address}</p>` : ''}

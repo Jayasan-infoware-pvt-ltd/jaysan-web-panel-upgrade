@@ -154,6 +154,11 @@ export function initBackup(container, storeId = null) {
             return;
         }
 
+        if (!storeId) {
+            alert('CRITICAL: You must select a specific store from the top dropdown before restoring data. You cannot restore data into "All Stores".');
+            return;
+        }
+
         if (!confirm('Are you sure you want to restore? This will update existing records and add new ones.')) return;
 
         restoreBtn.disabled = true;
@@ -171,12 +176,14 @@ export function initBackup(container, storeId = null) {
                     if (!sample) throw new Error("Empty file.");
 
                     let detectedTable = null;
-                    if ('bill_id' in sample && 'product_id' in sample) detectedTable = 'bill_items';
-                    else if ('customer_name' in sample && 'total_amount' in sample && 'payment_status' in sample) detectedTable = 'bills';
-                    else if ('device_details' in sample && 'status' in sample) detectedTable = 'repairs';
-                    else if ('item_name' in sample && 'amount' in sample && 'type' in sample) detectedTable = 'expenditures';
-                    else if ('requirement' in sample && 'customer_name' in sample) detectedTable = 'customer_queries';
-                    else if ('name' in sample && 'price' in sample && 'quantity' in sample) detectedTable = 'products';
+                    const keys = Object.keys(sample).map(k => k.toLowerCase());
+                    
+                    if (keys.includes('bill_id') && (keys.includes('product_name') || keys.includes('price_at_sale'))) detectedTable = 'bill_items';
+                    else if (keys.includes('total_amount') && keys.includes('customer_name')) detectedTable = 'bills';
+                    else if (keys.includes('device_details') && keys.includes('status')) detectedTable = 'repairs';
+                    else if (keys.includes('item_name') && keys.includes('amount')) detectedTable = 'expenditures';
+                    else if (keys.includes('requirement') && keys.includes('customer_name')) detectedTable = 'customer_queries';
+                    else if (keys.includes('name') && keys.includes('price') && keys.includes('quantity')) detectedTable = 'products';
 
                     if (detectedTable) {
                         const confirmMsg = `Detected Supabase export for table '${detectedTable}' (${json.length} rows).\nProceed to restore?`;
@@ -192,33 +199,117 @@ export function initBackup(container, storeId = null) {
                     }
                 }
 
-                const sequence = ['products', 'expenditures', 'customer_queries', 'repairs', 'bills', 'bill_items'];
+                const sequence = ['stores', 'products', 'expenditures', 'customer_queries', 'repairs', 'bills', 'bill_items'];
+                const aliases = {
+                    'bill': 'bills', 'bill_item': 'bill_items', 'product': 'products',
+                    'expenditure': 'expenditures', 'repair': 'repairs', 'store': 'stores',
+                    'customer_query': 'customer_queries', 'stock': 'products'
+                };
+
                 let totalRestored = 0;
 
+                // 1. Normalize JSON structure and keys
+                const normalizedData = {};
+                Object.keys(json).forEach(key => {
+                    const lowerKey = key.toLowerCase();
+                    const targetTable = aliases[lowerKey] || lowerKey;
+                    if (Array.isArray(json[key])) {
+                        normalizedData[targetTable] = json[key].map(row => {
+                            const cleanRow = {};
+                            Object.keys(row).forEach(rk => {
+                                const rkLower = rk.toLowerCase();
+                                cleanRow[rkLower] = row[rk];
+                            });
+                            // Legacy Mappings
+                            if (cleanRow.billid && !cleanRow.bill_id) cleanRow.bill_id = cleanRow.billid;
+                            if (cleanRow.productid && !cleanRow.product_id) cleanRow.product_id = cleanRow.productid;
+                            if (!cleanRow.id && cleanRow.uuid) cleanRow.id = cleanRow.uuid;
+                            return cleanRow;
+                        });
+                    }
+                });
+
+                // 2. Pre-scan: Check integrity of Bill Items
+                if (normalizedData.bill_items && normalizedData.bill_items.length > 0) {
+                    const billIds = new Set((normalizedData.bills || []).map(b => b.id));
+                    const missingParents = normalizedData.bill_items.filter(item => 
+                        item.bill_id && !billIds.has(item.bill_id)
+                    );
+
+                    if (missingParents.length > 0) {
+                        const sample = missingParents[0];
+                        const confirmed = confirm(`WARNING: Found ${missingParents.length} bill items referring to non-existent bills (e.g., ID: ${sample.bill_id}). \n\nThese will fail to restore. Would you like to attempt restoration anyway? (Recommended: No)`);
+                        if (!confirmed) throw new Error("Restoration cancelled due to integrity issues.");
+                    }
+                }
+
+                let statusLog = [];
+
+                let tableStats = {};
+
+                // 3. Sequential Restore
                 for (const table of sequence) {
-                    const rows = json[table];
+                    const rows = normalizedData[table];
                     if (rows && rows.length > 0) {
+                        let successCount = 0;
+                        let skipCount = 0;
+                        let skipReasons = {};
+
                         restoreStatus.textContent = `Restoring ${table} (${rows.length} records)...`;
                         restoreStatus.className = 'text-center text-sm font-medium h-6 text-blue-600';
 
-                        // Batch Upsert preventing payload too large errors
+                        // Batch Upsert
                         const BATCH_SIZE = 50;
                         for (let i = 0; i < rows.length; i += BATCH_SIZE) {
                             const chunk = rows.slice(i, i + BATCH_SIZE).map(row => {
                                 if (storeId) row.store_id = storeId;
                                 return row;
                             });
-                            const { error } = await supabase.from(table).upsert(chunk);
-                            if (error) throw new Error(`Failed to restore ${table} (chunk ${i}): ${error.message}`);
+                            
+                            try {
+                                const { error } = await supabase.from(table).upsert(chunk);
+                                if (error) throw error;
+                                successCount += chunk.length;
+                            } catch (batchError) {
+                                console.warn(`Batch failed for ${table}, falling back to row-by-row:`, batchError);
+                                
+                                // ROW-LEVEL FALLBACK
+                                for (const row of chunk) {
+                                    try {
+                                        const { error } = await supabase.from(table).upsert(row);
+                                        if (error) {
+                                            // 23503: Foreign Key Violation (Missing Parent)
+                                            // 23505: Unique Constraint Violation (Already Exists)
+                                            if (error.code === '23503' || error.code === '23505') {
+                                                skipCount++;
+                                                const reason = error.code === '23503' ? 'Missing Parent' : 'Already Exists';
+                                                skipReasons[reason] = (skipReasons[reason] || 0) + 1;
+                                                continue;
+                                            }
+                                            throw error;
+                                        }
+                                        successCount++;
+                                    } catch (rowError) {
+                                        console.error(`Fatal error on ${table} row:`, rowError);
+                                        throw new Error(`Restore Failed on ${table}: ${rowError.message}\n\nID: ${row.id || 'N/A'}`);
+                                    }
+                                }
+                            }
                         }
-
-                        totalRestored += rows.length;
+                        
+                        totalRestored += successCount;
+                        let statMsg = `${table}: ${successCount} restored`;
+                        if (skipCount > 0) {
+                            const details = Object.entries(skipReasons).map(([r, c]) => `${c} ${r}`).join(', ');
+                            statMsg += ` (${details} skipped)`;
+                        }
+                        statusLog.push(statMsg);
                     }
                 }
 
-                restoreStatus.textContent = `Success! Restored ${totalRestored} records.`;
+                restoreStatus.textContent = `Complete! Total Restored: ${totalRestored}`;
                 restoreStatus.className = 'text-center text-sm font-medium h-6 text-emerald-600 font-bold';
-                alert('Database Restore Complete!');
+                alert(`Database Restore Processed!\n\nSummary:\n${statusLog.join('\n')}`);
                 fileInput.value = '';
 
             } catch (err) {

@@ -51,21 +51,6 @@ export async function initStock(container, storeId = null) {
             </div>
         </div>
 
-        <!-- GLOBAL FLOATING POPUP MENU STOCK -->
-        <div id="stock-action-menu" class="hidden fixed z-[60] bg-white rounded-lg shadow-xl border border-slate-100 w-40 py-1 animate-in fade-in zoom-in-95 duration-100">
-            <button id="stock-popup-view" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2">
-                <i data-lucide="eye" class="w-4 h-4"></i> View Detail
-            </button>
-            <div class="border-t border-slate-100 my-1"></div>
-            <button id="stock-popup-edit" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2">
-                <i data-lucide="edit-2" class="w-4 h-4"></i> Edit Product
-            </button>
-            <div class="border-t border-slate-100 my-1"></div>
-            <button id="stock-popup-delete" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2">
-                <i data-lucide="trash-2" class="w-4 h-4"></i> Delete
-            </button>
-        </div>
-
         <!-- Modal Template -->
         <div id="product-modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-[100] backdrop-blur-sm">
             <div class="bg-white rounded-xl p-8 w-full max-w-md shadow-2xl transform transition-all scale-100 ring-1 ring-black/5 max-h-[90vh] overflow-y-auto">
@@ -173,8 +158,8 @@ export async function initStock(container, storeId = null) {
         <!-- Lightbox -->
         <div id="lightbox" class="fixed inset-0 z-[110] bg-black/95 hidden flex flex-col items-center justify-center backdrop-blur-md">
              <!-- Close button with very high z-index and pointer-events -->
-             <button id="lightbox-close" class="absolute top-6 right-6 text-white hover:text-slate-300 z-[120] cursor-pointer p-2 bg-black/20 rounded-full">
-                <i data-lucide="x" class="w-8 h-8"></i>
+             <button id="lightbox-close" class="absolute top-10 right-10 text-white hover:text-red-500 z-[200] cursor-pointer p-4 bg-black/60 rounded-full transition-all hover:scale-110 flex items-center justify-center border-2 border-white/20" title="Close Preview">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
              </button>
              
              <div class="relative w-full h-full flex items-center justify-center px-12 z-[115]">
@@ -289,8 +274,8 @@ export async function initStock(container, storeId = null) {
                         <i data-lucide="more-vertical" class="w-4 h-4"></i>
                     </button>
                 </td>
-            </tr>
-        `}).join('');
+            </tr>`;
+        }).join('');
 
         if (window.lucide) window.lucide.createIcons();
         attachRowListeners();
@@ -299,7 +284,9 @@ export async function initStock(container, storeId = null) {
     function openLightbox(images, index = 0) {
         lightboxImages = images;
         lightboxIndex = index;
-        updateLightbox();
+        lbImg.src = lightboxImages[lightboxIndex];
+        container.querySelector('#lightbox-caption').textContent = `${lightboxIndex + 1} / ${lightboxImages.length}`;
+        if (window.lucide) window.lucide.createIcons(lightbox);
         lightbox.classList.remove('hidden');
     }
 
@@ -330,60 +317,127 @@ export async function initStock(container, storeId = null) {
     });
 
 
-       // Popup Elements
-    const popupMenu = container.querySelector('#stock-action-menu');
+    // --- Body-Level Popup Menu Setup ---
+    let popupMenu = document.getElementById('stock-action-menu');
+    if (popupMenu) popupMenu.remove(); // Cleanup old one if any
+
+    popupMenu = document.createElement('div');
+    popupMenu.id = 'stock-action-menu';
+    popupMenu.className = 'hidden fixed z-[500] bg-white rounded-xl shadow-lg border border-slate-200 w-48 py-2';
+    popupMenu.style.transition = 'opacity 150ms ease, transform 150ms ease';
+    popupMenu.innerHTML = `
+        <button id="stock-popup-view" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            View Detail
+        </button>
+        <div class="border-t border-slate-100 my-1"></div>
+        <button id="stock-popup-edit" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+            Edit Product
+        </button>
+        <div class="border-t border-slate-100 my-1"></div>
+        <button id="stock-popup-delete" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+            Delete
+        </button>
+    `;
+    document.body.appendChild(popupMenu);
+
     let currentActiveId = null;
 
     function showPopup(btn, id) {
         const rect = btn.getBoundingClientRect();
         currentActiveId = id;
 
-        // 1. Make the menu visible but hidden to the eye so we can measure its size
+        popupMenu.style.opacity = '0';
+        popupMenu.style.transform = 'scale(0.95)';
         popupMenu.classList.remove('hidden');
-        popupMenu.style.visibility = 'hidden'; 
 
         const menuHeight = popupMenu.offsetHeight;
         const menuWidth = popupMenu.offsetWidth;
 
-        // 2. Calculate Vertical Position (Top)
-        // Default: Open below the button (rect.bottom + 5px gap)
         let top = rect.bottom + 5;
-
-        // Check if opening below goes off the screen bottom
         if (top + menuHeight > window.innerHeight) {
-            // Flip it to open ABOVE the button instead
             top = rect.top - menuHeight - 5;
         }
 
-        // 3. Calculate Horizontal Position (Left)
-        // Default: Align right edge of menu with right edge of button
         let left = rect.right - menuWidth;
+        if (left < 10) left = 10;
 
-        // Fallback: Ensure it doesn't go off the left edge of the screen
-        if (left < 10) {
-            left = 10; // Add some padding from the left
-        }
-
-        // 4. Apply the calculated positions
         popupMenu.style.top = `${top}px`;
         popupMenu.style.left = `${left}px`;
 
-        // 5. Finally, make it visible
-        popupMenu.style.visibility = 'visible';
+        requestAnimationFrame(() => {
+            popupMenu.style.opacity = '1';
+            popupMenu.style.transform = 'scale(1)';
+        });
+
+        // Re-attach button listeners for the new active ID
+        const viewBtn = popupMenu.querySelector('#stock-popup-view');
+        const editBtn = popupMenu.querySelector('#stock-popup-edit');
+        const deleteBtn = popupMenu.querySelector('#stock-popup-delete');
+
+        // Clear old listeners
+        const newView = viewBtn.cloneNode(true);
+        const newEdit = editBtn.cloneNode(true);
+        const newDel = deleteBtn.cloneNode(true);
+        viewBtn.replaceWith(newView);
+        editBtn.replaceWith(newEdit);
+        deleteBtn.replaceWith(newDel);
+
+        newView.onclick = () => {
+            const product = products.find(p => p.id === currentActiveId);
+            if (product) openModal(false, product, true);
+            hidePopup();
+        };
+
+        newEdit.onclick = () => {
+            const product = products.find(p => p.id === currentActiveId);
+            if (product) openModal(true, product);
+            hidePopup();
+        };
+
+        newDel.onclick = async () => {
+            const idToDelete = currentActiveId;
+            hidePopup();
+            const adminPass = prompt("Enter Developer Password to DELETE:");
+            if (adminPass !== "Jayasan@9045") {
+                alert("Incorrect Password!");
+                return;
+            }
+            if (confirm('Delete this product?')) {
+                const { error } = await supabase.from('products').delete().eq('id', idToDelete);
+                if (error) alert(error.message);
+                else fetchProducts();
+            }
+        };
     }
 
     function hidePopup() {
-        popupMenu.classList.add('hidden');
-        // We reset visibility style so it doesn't interfere if we reuse the element
-        popupMenu.style.visibility = ''; 
+        if (popupMenu) {
+            popupMenu.classList.add('hidden');
+            popupMenu.style.opacity = '';
+            popupMenu.style.transform = '';
+        }
         currentActiveId = null;
     }
 
-    document.addEventListener('click', (e) => {
+    // Move global listener to a named function so we can avoid duplicates if possible, 
+    // though initStock usually runs once per module mount.
+    const handleGlobalClick = (e) => {
         if (!popupMenu.contains(e.target) && !e.target.closest('.menu-trigger')) {
             hidePopup();
         }
-    });
+    };
+    document.addEventListener('click', handleGlobalClick);
+    
+    // Cleanup on module transition (a bit tricky without a router hook, 
+    // but moving the menu to body means we MUST clean up eventually)
+    // We'll add it to a window property that our main.js can call.
+    window.cleanupCurrentModule = () => {
+        if (popupMenu) popupMenu.remove();
+        document.removeEventListener('click', handleGlobalClick);
+    };
 
     function attachRowListeners() {
         // Thumbnail Click
@@ -398,57 +452,11 @@ export async function initStock(container, storeId = null) {
         // Row Menu Triggers
         tbody.querySelectorAll('.menu-trigger').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 const id = btn.dataset.id;
                 showPopup(btn, id);
             });
-        });
-
-        // View Button
-        const oldViewBtn = container.querySelector('#stock-popup-view');
-        const newViewBtn = oldViewBtn.cloneNode(true);
-        oldViewBtn.replaceWith(newViewBtn);
-        newViewBtn.addEventListener('click', () => {
-            if (currentActiveId) {
-                const product = products.find(p => p.id === currentActiveId);
-                if (product) openModal(false, product, true); // View Mode
-                hidePopup();
-            }
-        });
-
-        // Edit Button
-        const oldEditBtn = container.querySelector('#stock-popup-edit');
-        const newEditBtn = oldEditBtn.cloneNode(true);
-        oldEditBtn.replaceWith(newEditBtn);
-        newEditBtn.addEventListener('click', () => {
-            if (currentActiveId) {
-                const product = products.find(p => p.id === currentActiveId);
-                if (product) openModal(true, product); // Edit Mode
-                hidePopup();
-            }
-        });
-
-        // Delete Button
-        const oldDeleteBtn = container.querySelector('#stock-popup-delete');
-        const newDeleteBtn = oldDeleteBtn.cloneNode(true);
-        oldDeleteBtn.replaceWith(newDeleteBtn);
-        newDeleteBtn.addEventListener('click', async () => {
-            const idToDelete = currentActiveId;
-            if (idToDelete) {
-                hidePopup();
-
-                const adminPass = prompt("Enter Developer Password to DELETE:");
-                if (adminPass !== "Jayasan@9045") {
-                    alert("Incorrect Password! Access Denied.");
-                    return;
-                }
-
-                if (confirm('Are you sure you want to delete this product?')) {
-                    const { error } = await supabase.from('products').delete().eq('id', idToDelete);
-                    if (!error) fetchProducts();
-                    else alert('Error: ' + error.message);
-                }
-            }
         });
     }
 
@@ -584,8 +592,8 @@ export async function initStock(container, storeId = null) {
                 div.innerHTML = `
                     <img src="${e.target.result}" class="w-full h-full object-cover opacity-90">
                     <div class="absolute inset-0 flex items-center justify-center text-xs font-bold text-white bg-black/20 pointer-events-none">NEW</div>
-                    <button type="button" class="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 z-20 shadow-sm transition-transform hover:scale-110" title="Remove">
-                        <i data-lucide="x" class="w-3 h-3"></i>
+                    <button type="button" class="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 z-40 shadow-lg transition-transform hover:scale-110 flex items-center justify-center" title="Remove">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </button>
                 `;
                 if (window.lucide) window.lucide.createIcons(div);
@@ -672,6 +680,20 @@ export async function initStock(container, storeId = null) {
             if (saveBtn) saveBtn.classList.add('hidden');
             if (cancelBtn) cancelBtn.textContent = 'Close';
 
+            // Add "Edit Product" button next to Close if not already present
+            let editViewBtn = container.querySelector('#edit-from-view-btn');
+            if (!editViewBtn) {
+                editViewBtn = document.createElement('button');
+                editViewBtn.type = 'button';
+                editViewBtn.id = 'edit-from-view-btn';
+                editViewBtn.className = 'btn-primary flex items-center gap-2';
+                editViewBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg> Edit Product';
+                cancelBtn.insertAdjacentElement('afterend', editViewBtn);
+            } else {
+                editViewBtn.classList.remove('hidden');
+            }
+            editViewBtn.onclick = () => openModal(true, data);
+
             // Hide Image Upload Controls
             if (imageAddArea) imageAddArea.classList.add('hidden');
             if (addUrlBtn) addUrlBtn.classList.add('hidden');
@@ -688,6 +710,10 @@ export async function initStock(container, storeId = null) {
             });
             if (saveBtn) saveBtn.classList.remove('hidden');
             if (cancelBtn) cancelBtn.textContent = 'Cancel';
+
+            // Hide the view-mode Edit button when in edit/add mode
+            const editViewBtn = container.querySelector('#edit-from-view-btn');
+            if (editViewBtn) editViewBtn.classList.add('hidden');
 
             if (imageAddArea) imageAddArea.classList.remove('hidden');
             if (addUrlBtn) addUrlBtn.classList.remove('hidden');

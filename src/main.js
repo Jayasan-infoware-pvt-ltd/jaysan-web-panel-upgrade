@@ -98,6 +98,12 @@ function getStoreId() {
 }
 
 function navigateTo(view) {
+    // Cleanup body-level elements from previous module (e.g., action menus)
+    if (typeof window.cleanupCurrentModule === 'function') {
+        window.cleanupCurrentModule();
+        window.cleanupCurrentModule = null;
+    }
+
     const main = document.querySelector('#main-content');
     if (!main) return;
     main.innerHTML = '';
@@ -125,7 +131,11 @@ function navigateTo(view) {
 
     // Content container
     const content = document.createElement('div');
-    content.className = 'animate-fade-in';
+    content.id = 'view-content';
+    // Default scroll behavior (Standard for most modules)
+    const fixedViews = ['repairs', 'billing'];
+    content.className = fixedViews.includes(view) ? 'module-container-fixed' : 'module-container';
+    content.classList.add('animate-fade-in');
     main.appendChild(content);
 
     const storeId = getStoreId();

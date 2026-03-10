@@ -35,19 +35,6 @@ export async function initInvoiceHistory(container, storeId = null) {
             </div>
         </div>
         
-        <!-- GLOBAL FLOATING POPUP MENU -->
-        <div id="global-action-menu" class="hidden fixed z-[60] bg-white rounded-lg shadow-xl border border-slate-100 w-44 py-1 animate-in fade-in zoom-in-95 duration-100">
-            <button id="popup-view" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2">
-                <i data-lucide="eye" class="w-4 h-4"></i> View Detail
-            </button>
-            <button id="popup-download" class="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 flex items-center gap-2">
-                <i data-lucide="download" class="w-4 h-4"></i> Download PDF
-            </button>
-            <div class="border-t border-slate-100 my-1"></div>
-            <button id="popup-delete" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2">
-                <i data-lucide="trash-2" class="w-4 h-4"></i> Delete
-            </button>
-        </div>
 
         <!-- Modal for Invoice Details -->
         <div id="detail-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
@@ -55,7 +42,7 @@ export async function initInvoiceHistory(container, storeId = null) {
                 <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                     <h3 class="text-lg font-bold text-slate-800">Invoice Details</h3>
                     <button id="close-modal-btn" class="text-slate-400 hover:text-red-500 transition-colors">
-                        <i data-lucide="x" class="w-5 h-5"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                     </button>
                 </div>
                 <div id="modal-content" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
@@ -76,51 +63,112 @@ export async function initInvoiceHistory(container, storeId = null) {
     let bills = [];
 
     // --- Popup Elements ---
-    const popupMenu = container.querySelector('#global-action-menu');
-    const popupViewBtn = container.querySelector('#popup-view');
-    const popupDownloadBtn = container.querySelector('#popup-download');
-    const popupDeleteBtn = container.querySelector('#popup-delete');
+    // --- Body-Level Popup Menu Setup ---
+    let popupMenu = document.getElementById('invoice-action-menu');
+    if (popupMenu) popupMenu.remove();
+
+    popupMenu = document.createElement('div');
+    popupMenu.id = 'invoice-action-menu';
+    popupMenu.className = 'hidden fixed z-[500] bg-white rounded-lg shadow-lg border border-slate-100 w-44 py-1';
+    popupMenu.style.transition = 'opacity 150ms ease, transform 150ms ease';
+    popupMenu.innerHTML = `
+        <button id="invoice-popup-view" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            View Detail
+        </button>
+        <button id="invoice-popup-download" class="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download PDF
+        </button>
+        <div class="border-t border-slate-100 my-1"></div>
+        <button id="invoice-popup-delete" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+            Delete
+        </button>
+    `;
+    document.body.appendChild(popupMenu);
+
     let currentActiveBill = null;
 
-    // --- Popup Logic (FIXED: Shows above if no space below) ---
     function showPopup(btn, bill) {
         const rect = btn.getBoundingClientRect();
         currentActiveBill = bill;
-        
-        // Calculate space available below the button
-        const spaceBelow = window.innerHeight - rect.bottom;
-        const gap = 5; // 5px gap between button and menu
-        const menuHeightThreshold = 150; // Approximate height needed for the menu
 
-        // If there isn't enough space below, show it above
-        if (spaceBelow < menuHeightThreshold) {
-            // 1. Temporarily reveal the menu to get its true height
-            popupMenu.classList.remove('hidden');
-            const menuHeight = popupMenu.offsetHeight;
-            
-            // 2. Calculate top position (Above the button)
-            popupMenu.style.top = `${rect.top - menuHeight - gap}px`;
-        } else {
-            // Standard position: Below the button
-            popupMenu.style.top = `${rect.bottom + gap}px`;
+        popupMenu.style.opacity = '0';
+        popupMenu.style.transform = 'scale(0.95)';
+        popupMenu.classList.remove('hidden');
+
+        const menuHeight = popupMenu.offsetHeight;
+        const menuWidth = popupMenu.offsetWidth;
+
+        let top = rect.bottom + 5;
+        if (top + menuHeight > window.innerHeight) {
+            top = rect.top - menuHeight - 5;
         }
 
-        popupMenu.style.left = `${rect.right - 160}px`;
-        
-        // Ensure it is visible
-        popupMenu.classList.remove('hidden');
+        let left = rect.right - menuWidth;
+        if (left < 10) left = 10;
+
+        popupMenu.style.top = `${top}px`;
+        popupMenu.style.left = `${left}px`;
+
+        requestAnimationFrame(() => {
+            popupMenu.style.opacity = '1';
+            popupMenu.style.transform = 'scale(1)';
+        });
+
+        // Re-attach button listeners
+        const viewBtn = popupMenu.querySelector('#invoice-popup-view');
+        const downloadBtn = popupMenu.querySelector('#invoice-popup-download');
+        const deleteBtn = popupMenu.querySelector('#invoice-popup-delete');
+
+        viewBtn.onclick = () => {
+            openInvoiceModal(currentActiveBill);
+            hidePopup();
+        };
+
+        downloadBtn.onclick = async () => {
+            const billToDownload = currentActiveBill;
+            hidePopup();
+            try {
+                await generateAndDownloadPDF(billToDownload);
+            } catch (error) {
+                console.error("PDF Download Failed:", error);
+                alert("Failed to generate PDF.");
+            }
+        };
+
+        deleteBtn.onclick = async () => {
+            const idToDelete = currentActiveBill.id;
+            hidePopup();
+            const adminPass = prompt("Enter Developer Password to DELETE:");
+            if (adminPass !== "Jayasan@9045") {
+                alert("Incorrect Password!");
+                return;
+            }
+            if (confirm('Are you sure you want to DELETE this invoice?')) {
+                const { error } = await supabase.from('bills').delete().eq('id', idToDelete);
+                if (error) alert(error.message);
+                else fetchBills();
+            }
+        };
     }
 
     function hidePopup() {
-        popupMenu.classList.add('hidden');
-        setTimeout(() => { currentActiveBill = null; }, 100);
+        if (popupMenu) {
+            popupMenu.classList.add('hidden');
+            popupMenu.style.opacity = '';
+            popupMenu.style.transform = '';
+        }
+        currentActiveBill = null;
     }
 
-    document.addEventListener('click', (e) => {
+    const handleGlobalClick = (e) => {
         if (!popupMenu.contains(e.target) && !e.target.closest('.menu-trigger')) {
             hidePopup();
         }
-    });
+    };
+    document.addEventListener('click', handleGlobalClick);
 
     // --- Modal Logic ---
     const modal = container.querySelector('#detail-modal');
@@ -420,41 +468,6 @@ export async function initInvoiceHistory(container, storeId = null) {
         });
     }
 
-    // Popup Actions
-    popupViewBtn.addEventListener('click', () => {
-        if (currentActiveBill) openInvoiceModal(currentActiveBill);
-    });
-
-    // FIX: Popup Download Handler
-    popupDownloadBtn.addEventListener('click', async () => {
-        if (currentActiveBill) {
-            const billToDownload = currentActiveBill;
-            hidePopup();
-            try {
-                await generateAndDownloadPDF(billToDownload);
-            } catch (error) {
-                console.error("PDF Download Failed:", error);
-                alert("Failed to generate PDF. Please check console for details.");
-            }
-        }
-    });
-
-    popupDeleteBtn.addEventListener('click', async () => {
-        if (currentActiveBill) {
-            hidePopup();
-            const adminPass = prompt("Enter Developer Password to DELETE:");
-            if (adminPass !== "admin123") {
-                alert("Incorrect Password! Access Denied.");
-                return;
-            }
-
-            if (confirm('Are you sure you want to DELETE this invoice from the database? This action is irreversible.')) {
-                const { error } = await supabase.from('bills').delete().eq('id', currentActiveBill.id);
-                if (error) alert('Error deleting: ' + error.message);
-                else fetchBills();
-            }
-        }
-    });
 
     // CSV Report
     container.querySelector('#download-all-report').addEventListener('click', () => {

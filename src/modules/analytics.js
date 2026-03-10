@@ -71,11 +71,28 @@ export async function initAnalytics(container, navigateFn, storeId = null) {
                      <h3 class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-2" id="label-profit">Net Profit (All Time)</h3>
                      <p class="text-3xl font-bold text-slate-800" id="net-profit-card">₹0</p>
                      
-                     <div class="mt-4 flex justify-between items-center">
-                        <span class="bg-emerald-50 text-emerald-600 text-xs font-medium px-2 py-1 rounded-full">After COGS & Exp</span>
-                        <button id="download-financial-report" class="text-slate-400 hover:text-blue-600 transition-colors p-1 hover:bg-slate-100 rounded" title="Download Full Financial Report">
-                            <i data-lucide="download" class="w-4 h-4"></i>
-                        </button>
+                     <div class="mt-4 flex flex-col gap-2">
+                        <div class="text-xs text-slate-500 font-medium bg-slate-50 p-2 rounded flex justify-between">
+                            <span>COGS:</span> <span id="cogs-display" class="text-rose-600">₹0</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="bg-emerald-50 text-emerald-600 text-xs font-medium px-2 py-1 rounded-full">Sales - COGS - Exp</span>
+                            <button id="download-financial-report" class="text-slate-400 hover:text-blue-600 transition-colors p-1 hover:bg-slate-100 rounded" title="Download Full Financial Report">
+                                <i data-lucide="download" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total COGS -->
+                <div class="bg-white rounded-xl p-6 border border-slate-100 shadow-[0_2px_10px_-3px_rgba(244,63,94,0.1)] relative overflow-hidden group hover:shadow-md transition-shadow">
+                     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                         <i data-lucide="tag" class="w-10 h-10 text-orange-600"></i>
+                    </div>
+                     <h3 class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-2">Total COGS</h3>
+                     <p class="text-3xl font-bold text-slate-800" id="total-cogs-card">₹0</p>
+                     <div class="mt-4 flex items-center text-xs text-orange-600 font-medium">
+                        <span class="bg-orange-50 px-2 py-1 rounded-full">Cost of Goods</span>
                     </div>
                 </div>
 
@@ -294,14 +311,16 @@ export async function initAnalytics(container, navigateFn, storeId = null) {
         // Calculate All Time Revenue separate
         const allTimeRevenue = allTimeBills?.reduce((sum, b) => sum + (Number(b.total_amount) || 0), 0) || 0;
 
-        // 3. Calculate COGS (Dynamic)
+        // 3. Calculate COGS (Dynamic - strictly using current stock cost price)
         let totalCOGS = 0;
-        billItems.forEach(item => {
-            // Prefer current product cost, fallback to historical cost_at_sale
-            const currentCost = productMap.get(item.product_id) ?? Number(item.cost_at_sale) ?? 0;
-            const qty = Number(item.quantity) || 1;
-            totalCOGS += currentCost * qty;
-        });
+        if (billItems && billItems.length > 0) {
+            billItems.forEach(item => {
+                // Strictly use current product cost if it's a product, otherwise 0
+                const currentCost = item.product_id ? (productMap.get(item.product_id) || 0) : 0;
+                const qty = Number(item.quantity) || 1;
+                totalCOGS += currentCost * qty;
+            });
+        }
 
         const netProfit = (totalSales - totalCOGS) - totalExp;
 
@@ -309,6 +328,11 @@ export async function initAnalytics(container, navigateFn, storeId = null) {
         salesCard.textContent = `₹${totalSales.toLocaleString()}`;
         expCard.textContent = `₹${totalExp.toLocaleString()}`;
         profitCard.textContent = `₹${netProfit.toLocaleString()}`;
+        const cogsDisplay = container.querySelector('#cogs-display');
+        if (cogsDisplay) cogsDisplay.textContent = `₹${totalCOGS.toLocaleString()}`;
+        
+        const cogsCard = container.querySelector('#total-cogs-card');
+        if (cogsCard) cogsCard.textContent = `₹${totalCOGS.toLocaleString()}`;
 
         // Update All Time Card
         const allTimeCard = container.querySelector('#all-time-revenue-card');

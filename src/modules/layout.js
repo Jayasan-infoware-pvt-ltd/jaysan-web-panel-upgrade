@@ -40,7 +40,7 @@ export function renderSidebar(container, navigateCallback) {
     const renderNavItem = (item) => `
         <button
             data-view="${item.id}"
-            class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sidebar-muted hover:bg-white/[0.08] hover:text-white transition-all duration-200 group text-sm"
+            class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl sidebar-muted hover:bg-white/[0.08] hover:text-white transition-all duration-200 group text-sm"
             id="nav-${item.id}"
         >
             <i data-lucide="${item.icon}" class="w-[18px] h-[18px] flex-shrink-0 group-hover:scale-110 transition-transform"></i>
@@ -50,7 +50,7 @@ export function renderSidebar(container, navigateCallback) {
 
     const storeOptions = stores.map(s => `
         <option value="${s.id}" ${activeStore?.id === s.id ? 'selected' : ''}>
-            ${s.name} — ${s.location}
+            ${s.name} — ${s.location || 'Main'}
         </option>
     `).join('');
 
@@ -63,7 +63,7 @@ export function renderSidebar(container, navigateCallback) {
             <div class="sidebar-header">
                 <div class="sidebar-brand">
                     <div class="brand-icon">
-                        <i data-lucide="zap" class="w-5 h-5"></i>
+                        <i data-lucide="globe" class="w-5 h-5"></i>
                     </div>
                     <div class="brand-text">
                         <span class="brand-name">JRPL</span>
@@ -83,7 +83,7 @@ export function renderSidebar(container, navigateCallback) {
                         Active Store
                     </label>
                     <select id="store-switcher" class="store-dropdown">
-                        <option value="">🏢 All Stores</option>
+                        <option value="">Global Overview</option>
                         ${storeOptions}
                     </select>
                 </div>
