@@ -6,762 +6,762 @@ import { isMainAdmin } from './auth.js';
 
 // ── Company config ── Update these values to match actual registration details
 const COMPANY_CONFIG = {
-    gstin: 'GSTIN: 09ABCDE1234F1Z5', // TODO: Replace with actual registered GSTIN
+ gstin: 'GSTIN: 09ABCDE1234F1Z5', // TODO: Replace with actual registered GSTIN
 };
 
 export async function initInvoiceHistory(container, storeId = null) {
-    container.innerHTML = `
-        <div class="space-y-6">
-            <div class="flex justify-between items-center">
-                <h2 class="text-2xl font-bold text-zinc-900">Invoice History</h2>
-                <button id="download-all-report" class="btn-secondary text-sm">
-                    <i data-lucide="download" class="w-4 h-4 mr-2"></i> Export CSV
-                </button>
-            </div>
+ container.innerHTML = `
+ <div class="space-y-6">
+ <div class="flex justify-between items-center">
+ <h2 class="text-2xl font-bold text-zinc-900">Invoice History</h2>
+ <button id="download-all-report" class="btn-secondary text-sm">
+ <i data-lucide="download" class="w-4 h-4 mr-2"></i> Export CSV
+ </button>
+ </div>
 
-            <div class="card overflow-hidden relative">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-zinc-600">
-                        <thead class="bg-zinc-50 text-xs uppercase font-semibold text-zinc-500 border-b border-zinc-200">
-                            <tr>
-                                <th class="p-4">Invoice No</th>
-                                <th class="p-4">Date</th>
-                                <th class="p-4">Customer</th>
-                                <th class="p-4 text-center">Status</th>
-                                <th class="p-4 text-center">Payment Details</th>
-                                <th class="p-4 text-right">Amount</th>
-                                <th class="p-4 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="invoice-list-body" class="divide-y divide-zinc-100">
-                            <tr><td colspan="6" class="p-8 text-center">Loading invoices...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        
+ <div class="card overflow-hidden relative">
+ <div class="overflow-x-auto">
+ <table class="w-full text-left text-sm text-zinc-600">
+ <thead class="bg-zinc-50 text-xs uppercase font-semibold text-zinc-500 border-b border-zinc-200">
+ <tr>
+ <th class="p-4">Invoice No</th>
+ <th class="p-4">Date</th>
+ <th class="p-4">Customer</th>
+ <th class="p-4 text-center">Status</th>
+ <th class="p-4 text-center">Payment Details</th>
+ <th class="p-4 text-right">Amount</th>
+ <th class="p-4 text-right">Actions</th>
+ </tr>
+ </thead>
+ <tbody id="invoice-list-body" class="divide-y divide-zinc-100">
+ <tr><td colspan="6" class="p-8 text-center">Loading invoices...</td></tr>
+ </tbody>
+ </table>
+ </div>
+ </div>
+ </div>
+ 
 
-        <!-- Modal for Invoice Details -->
-        <div id="detail-modal" class="fixed inset-0 z-50 hidden bg-zinc-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="bg-white rounded-lg shadow-md w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-                <div class="px-6 py-4 border-b border-zinc-100 flex justify-between items-center bg-zinc-50">
-                    <h3 class="text-lg font-bold text-zinc-900">Invoice Details</h3>
-                    <button id="close-modal-btn" class="text-zinc-400 hover:text-red-500 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                    </button>
-                </div>
-                <div id="modal-content" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto overscroll-contain">
-                    <!-- Content injected via JS -->
-                </div>
-                <div class="px-6 py-4 bg-zinc-50 text-right flex justify-end gap-3">
-                     <button id="modal-download-btn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium transition-colors text-sm flex items-center gap-2">
-                        <i data-lucide="download" class="w-4 h-4"></i> Download PDF
-                    </button>
-                    <button id="close-modal-action" class="px-4 py-2 bg-white border border-zinc-300 hover:bg-zinc-50 text-zinc-700 rounded font-medium transition-colors text-sm">Close</button>
-                </div>
-            </div>
-        </div>
-    `;
+ <!-- Modal for Invoice Details -->
+ <div id="detail-modal" class="fixed inset-0 z-50 hidden bg-zinc-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+ <div class="bg-white rounded-lg shadow-md w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+ <div class="px-6 py-4 border-b border-zinc-100 flex justify-between items-center bg-zinc-50">
+ <h3 class="text-lg font-bold text-zinc-900">Invoice Details</h3>
+ <button id="close-modal-btn" class="text-zinc-400 hover:text-red-500 transition-colors">
+ <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+ </button>
+ </div>
+ <div id="modal-content" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto overscroll-contain">
+ <!-- Content injected via JS -->
+ </div>
+ <div class="px-6 py-4 bg-zinc-50 text-right flex justify-end gap-3">
+ <button id="modal-download-btn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium transition-colors text-sm flex items-center gap-2">
+ <i data-lucide="download" class="w-4 h-4"></i> Download PDF
+ </button>
+ <button id="close-modal-action" class="px-4 py-2 bg-white border border-zinc-300 hover:bg-zinc-50 text-zinc-700 rounded font-medium transition-colors text-sm">Close</button>
+ </div>
+ </div>
+ </div>
+ `;
 
-    if (window.lucide) window.lucide.createIcons();
-    const tbody = container.querySelector('#invoice-list-body');
-    let bills = [];
+ if (window.lucide) window.lucide.createIcons();
+ const tbody = container.querySelector('#invoice-list-body');
+ let bills = [];
 
-    // --- Popup Elements ---
-    // --- Body-Level Popup Menu Setup ---
-    let popupMenu = document.getElementById('invoice-action-menu');
-    if (popupMenu) popupMenu.remove();
+ // --- Popup Elements ---
+ // --- Body-Level Popup Menu Setup ---
+ let popupMenu = document.getElementById('invoice-action-menu');
+ if (popupMenu) popupMenu.remove();
 
-    popupMenu = document.createElement('div');
-    popupMenu.id = 'invoice-action-menu';
-    popupMenu.className = 'hidden fixed z-[500] bg-white rounded-lg shadow-sm border border-zinc-100 w-44 py-1';
-    popupMenu.style.transition = 'opacity 150ms ease, transform 150ms ease';
-    popupMenu.innerHTML = `
-        <button id="invoice-popup-view" class="w-full text-left px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            View Detail
-        </button>
-        <button id="invoice-popup-edit" class="w-full text-left px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-            Edit Invoice
-        </button>
-        <button id="invoice-popup-download" class="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            Download PDF
-        </button>
-        <div class="border-t border-zinc-100 my-1"></div>
-        <button id="invoice-popup-delete" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-            Delete
-        </button>
-    `;
-    document.body.appendChild(popupMenu);
+ popupMenu = document.createElement('div');
+ popupMenu.id = 'invoice-action-menu';
+ popupMenu.className = 'hidden fixed z-[500] bg-white rounded-lg shadow-sm border border-zinc-100 w-44 py-1';
+ popupMenu.style.transition = 'opacity 150ms ease, transform 150ms ease';
+ popupMenu.innerHTML = `
+ <button id="invoice-popup-view" class="w-full text-left px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 flex items-center gap-2">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+ View Detail
+ </button>
+ <button id="invoice-popup-edit" class="w-full text-left px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 flex items-center gap-2">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+ Edit Invoice
+ </button>
+ <button id="invoice-popup-download" class="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 flex items-center gap-2">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+ Download PDF
+ </button>
+ <div class="border-t border-zinc-100 my-1"></div>
+ <button id="invoice-popup-delete" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+ Delete
+ </button>
+ `;
+ document.body.appendChild(popupMenu);
 
-    let currentActiveBill = null;
+ let currentActiveBill = null;
 
-    function showPopup(btn, bill) {
-        const rect = btn.getBoundingClientRect();
-        currentActiveBill = bill;
+ function showPopup(btn, bill) {
+ const rect = btn.getBoundingClientRect();
+ currentActiveBill = bill;
 
-        popupMenu.style.opacity = '0';
-        popupMenu.style.transform = 'scale(0.95)';
-        popupMenu.classList.remove('hidden');
+ popupMenu.style.opacity = '0';
+ popupMenu.style.transform = 'scale(0.95)';
+ popupMenu.classList.remove('hidden');
 
-        const menuHeight = popupMenu.offsetHeight;
-        const menuWidth = popupMenu.offsetWidth;
+ const menuHeight = popupMenu.offsetHeight;
+ const menuWidth = popupMenu.offsetWidth;
 
-        let top = rect.bottom + 5;
-        if (top + menuHeight > window.innerHeight) {
-            top = rect.top - menuHeight - 5;
-        }
+ let top = rect.bottom + 5;
+ if (top + menuHeight > window.innerHeight) {
+ top = rect.top - menuHeight - 5;
+ }
 
-        let left = rect.right - menuWidth;
-        if (left < 10) left = 10;
+ let left = rect.right - menuWidth;
+ if (left < 10) left = 10;
 
-        popupMenu.style.top = `${top}px`;
-        popupMenu.style.left = `${left}px`;
+ popupMenu.style.top = `${top}px`;
+ popupMenu.style.left = `${left}px`;
 
-        requestAnimationFrame(() => {
-            popupMenu.style.opacity = '1';
-            popupMenu.style.transform = 'scale(1)';
-        });
+ requestAnimationFrame(() => {
+ popupMenu.style.opacity = '1';
+ popupMenu.style.transform = 'scale(1)';
+ });
 
-        // Re-attach button listeners
-        const viewBtn = popupMenu.querySelector('#invoice-popup-view');
-        const editBtn = popupMenu.querySelector('#invoice-popup-edit');
-        const downloadBtn = popupMenu.querySelector('#invoice-popup-download');
-        const deleteBtn = popupMenu.querySelector('#invoice-popup-delete');
+ // Re-attach button listeners
+ const viewBtn = popupMenu.querySelector('#invoice-popup-view');
+ const editBtn = popupMenu.querySelector('#invoice-popup-edit');
+ const downloadBtn = popupMenu.querySelector('#invoice-popup-download');
+ const deleteBtn = popupMenu.querySelector('#invoice-popup-delete');
 
-        viewBtn.onclick = () => {
-            openInvoiceModal(currentActiveBill, false);
-            hidePopup();
-        };
+ viewBtn.onclick = () => {
+ openInvoiceModal(currentActiveBill, false);
+ hidePopup();
+ };
 
-        editBtn.onclick = () => {
-            openInvoiceModal(currentActiveBill, true);
-            hidePopup();
-        };
+ editBtn.onclick = () => {
+ openInvoiceModal(currentActiveBill, true);
+ hidePopup();
+ };
 
-        downloadBtn.onclick = async () => {
-            const billToDownload = currentActiveBill;
-            hidePopup();
-            try {
-                await generateAndDownloadPDF(billToDownload);
-            } catch (error) {
-                console.error("PDF Download Failed:", error);
-                alert("Failed to generate PDF.");
-            }
-        };
+ downloadBtn.onclick = async () => {
+ const billToDownload = currentActiveBill;
+ hidePopup();
+ try {
+ await generateAndDownloadPDF(billToDownload);
+ } catch (error) {
+ console.error("PDF Download Failed:", error);
+ alert("Failed to generate PDF.");
+ }
+ };
 
-        deleteBtn.onclick = async () => {
-            const idToDelete = currentActiveBill.id;
-            hidePopup();
-            if (!isMainAdmin()) {
-                alert("Only the Main Administrator can delete invoices.");
-                return;
-            }
-            if (confirm('Are you sure you want to permanently DELETE this invoice? This cannot be undone.')) {
-                const { error } = await supabase.from('bills').delete().eq('id', idToDelete);
-                if (error) alert(error.message);
-                else fetchBills();
-            }
-        };
-    }
+ deleteBtn.onclick = async () => {
+ const idToDelete = currentActiveBill.id;
+ hidePopup();
+ if (!isMainAdmin()) {
+ alert("Only the Main Administrator can delete invoices.");
+ return;
+ }
+ if (confirm('Are you sure you want to permanently DELETE this invoice? This cannot be undone.')) {
+ const { error } = await supabase.from('bills').delete().eq('id', idToDelete);
+ if (error) alert(error.message);
+ else fetchBills();
+ }
+ };
+ }
 
-    function hidePopup() {
-        if (popupMenu) {
-            popupMenu.classList.add('hidden');
-            popupMenu.style.opacity = '';
-            popupMenu.style.transform = '';
-        }
-        currentActiveBill = null;
-    }
+ function hidePopup() {
+ if (popupMenu) {
+ popupMenu.classList.add('hidden');
+ popupMenu.style.opacity = '';
+ popupMenu.style.transform = '';
+ }
+ currentActiveBill = null;
+ }
 
-    const handleGlobalClick = (e) => {
-        if (!popupMenu.contains(e.target) && !e.target.closest('.menu-trigger')) {
-            hidePopup();
-        }
-    };
-    document.addEventListener('click', handleGlobalClick);
+ const handleGlobalClick = (e) => {
+ if (!popupMenu.contains(e.target) && !e.target.closest('.menu-trigger')) {
+ hidePopup();
+ }
+ };
+ document.addEventListener('click', handleGlobalClick);
 
-    // Register cleanup so main.js can remove listeners when navigating away
-    window.cleanupCurrentModule = () => {
-        document.removeEventListener('click', handleGlobalClick);
-        popupMenu?.remove();
-    };
+ // Register cleanup so main.js can remove listeners when navigating away
+ window.cleanupCurrentModule = () => {
+ document.removeEventListener('click', handleGlobalClick);
+ popupMenu?.remove();
+ };
 
-    // --- Modal Logic ---
-    const modal = container.querySelector('#detail-modal');
-    const modalContent = container.querySelector('#modal-content');
-    const closeModalBtns = [container.querySelector('#close-modal-btn'), container.querySelector('#close-modal-action')];
-    const modalDownloadBtn = container.querySelector('#modal-download-btn');
+ // --- Modal Logic ---
+ const modal = container.querySelector('#detail-modal');
+ const modalContent = container.querySelector('#modal-content');
+ const closeModalBtns = [container.querySelector('#close-modal-btn'), container.querySelector('#close-modal-action')];
+ const modalDownloadBtn = container.querySelector('#modal-download-btn');
 
-    async function openInvoiceModal(bill, editMode = false) {
-        hidePopup();
-        const { data: items } = await supabase.from('bill_items').select('*').eq('bill_id', bill.id);
+ async function openInvoiceModal(bill, editMode = false) {
+ hidePopup();
+ const { data: items } = await supabase.from('bill_items').select('*').eq('bill_id', bill.id);
 
-        const itemsHtml = (items && items.length > 0)
-            ? items.map((item, index) => `
-                <div class="flex justify-between items-center py-2 border-b border-zinc-100 last:border-0 text-sm">
-                    <div class="flex-1">
-                        <div class="font-medium text-zinc-700">${item.product_name}</div>
-                        <div class="text-xs text-zinc-400">Serial: ${item.serial_number || '-'}</div>
-                    </div>
-                    <div class="text-zinc-600 w-16 text-center">x${item.quantity}</div>
-                    <div class="font-medium text-zinc-900 w-24 text-right">₹${(item.price_at_sale * item.quantity).toFixed(2)}</div>
-                </div>
-            `).join('')
-            : '<div class="text-sm text-zinc-400 italic">No items found for this invoice.</div>';
+ const itemsHtml = (items && items.length > 0)
+ ? items.map((item, index) => `
+ <div class="flex justify-between items-center py-2 border-b border-zinc-100 last:border-0 text-sm">
+ <div class="flex-1">
+ <div class="font-medium text-zinc-700">${item.product_name}</div>
+ <div class="text-xs text-zinc-400">Serial: ${item.serial_number || '-'}</div>
+ </div>
+ <div class="text-zinc-600 w-16 text-center">x${item.quantity}</div>
+ <div class="font-medium text-zinc-900 w-24 text-right">₹${(item.price_at_sale * item.quantity).toFixed(2)}</div>
+ </div>
+ `).join('')
+ : '<div class="text-sm text-zinc-400 italic">No items found for this invoice.</div>';
 
-        modalContent.innerHTML = `
-            <div class="grid grid-cols-2 gap-6 mb-6">
-                <div>
-                    <label class="text-xs font-bold text-zinc-400 uppercase">Invoice No</label>
-                    <div class="text-lg font-bold text-zinc-900 font-mono">${bill.invoice_number || '#' + bill.id.slice(0, 8).toUpperCase()}</div>
-                </div>
-                <div class="text-right">
-                    <label class="text-xs font-bold text-zinc-400 uppercase">Date</label>
-                    <div class="text-zinc-900">${new Date(bill.created_at).toLocaleDateString()}</div>
-                </div>
-                
-                <div class="col-span-2 border-b border-zinc-100 pb-4 mb-2">
-                    <label class="text-xs font-bold text-zinc-400 uppercase">Bill To</label>
-                    <div class="text-lg font-medium text-zinc-900">${bill.customer_name || 'Walk-in'}</div>
-                    <div class="text-zinc-500 text-sm">${bill.customer_phone || ''}</div>
-                </div>
+ modalContent.innerHTML = `
+ <div class="grid grid-cols-2 gap-6 mb-6">
+ <div>
+ <label class="text-xs font-bold text-zinc-400 uppercase">Invoice No</label>
+ <div class="text-lg font-bold text-zinc-900 font-mono">${bill.invoice_number || '#' + bill.id.slice(0, 8).toUpperCase()}</div>
+ </div>
+ <div class="text-right">
+ <label class="text-xs font-bold text-zinc-400 uppercase">Date</label>
+ <div class="text-zinc-900">${new Date(bill.created_at).toLocaleDateString()}</div>
+ </div>
+ 
+ <div class="col-span-2 border-b border-zinc-100 pb-4 mb-2">
+ <label class="text-xs font-bold text-zinc-400 uppercase">Bill To</label>
+ <div class="text-lg font-medium text-zinc-900">${bill.customer_name || 'Walk-in'}</div>
+ <div class="text-zinc-500 text-sm">${bill.customer_phone || ''}</div>
+ </div>
 
-                <div class="col-span-2 flex justify-between items-center mb-4">
-                    <div>
-                        <label class="text-xs font-bold text-zinc-400 uppercase">Status</label>
-                        <div class="mt-1 flex items-center gap-2">
-                             <select id="modal-status-select" class="text-xs font-bold rounded-lg border-zinc-200 bg-zinc-50 py-1 pl-2 pr-8 focus:ring-0">
-                                <option value="Paid" ${bill.payment_status === 'Paid' ? 'selected' : ''}>Paid</option>
-                                <option value="Pending" ${bill.payment_status === 'Pending' ? 'selected' : ''}>Pending</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <label class="text-xs font-bold text-zinc-400 uppercase">Total Amount</label>
-                        <div class="text-2xl font-bold text-zinc-900">₹${bill.total_amount.toFixed(2)}</div>
-                    </div>
-                </div>
+ <div class="col-span-2 flex justify-between items-center mb-4">
+ <div>
+ <label class="text-xs font-bold text-zinc-400 uppercase">Status</label>
+ <div class="mt-1 flex items-center gap-2">
+ <select id="modal-status-select" class="text-xs font-bold rounded-lg border-zinc-200 bg-zinc-50 py-1 pl-2 pr-8 focus:ring-0">
+ <option value="Paid" ${bill.payment_status === 'Paid' ? 'selected' : ''}>Paid</option>
+ <option value="Pending" ${bill.payment_status === 'Pending' ? 'selected' : ''}>Pending</option>
+ </select>
+ </div>
+ </div>
+ <div class="text-right">
+ <label class="text-xs font-bold text-zinc-400 uppercase">Total Amount</label>
+ <div class="text-2xl font-bold text-zinc-900">₹${bill.total_amount.toFixed(2)}</div>
+ </div>
+ </div>
 
-                <!-- Editable Payment Method Section -->
-                <div id="modal-payment-section" class="col-span-2 mb-4 p-4 bg-emerald-50 rounded-lg border border-emerald-200 ${bill.payment_status !== 'Paid' ? 'hidden' : ''}">
-                    <label class="block text-sm font-medium text-emerald-700 mb-2">Payment Method</label>
-                    <div class="flex items-center gap-4 mb-3">
-                        <label class="inline-flex items-center cursor-pointer">
-                            <input type="radio" name="modal-payment-method" value="Cash" class="form-radio text-emerald-600" ${!bill.payment_method || bill.payment_method === 'Cash' ? 'checked' : ''}>
-                            <span class="ml-2 text-sm text-zinc-700">Cash</span>
-                        </label>
-                        <label class="inline-flex items-center cursor-pointer">
-                            <input type="radio" name="modal-payment-method" value="Online" class="form-radio text-emerald-600" ${bill.payment_method === 'Online' ? 'checked' : ''}>
-                            <span class="ml-2 text-sm text-zinc-700">Online</span>
-                        </label>
-                    </div>
-                    <!-- Cash Fields -->
-                    <div id="modal-cash-fields" class="grid grid-cols-1 gap-2 ${bill.payment_method === 'Online' ? 'hidden' : ''}">
-                        <input type="text" id="modal-cash-receiver" class="input-field h-9 text-sm" placeholder="Received By (Name)" value="${bill.cash_receiver || ''}">
-                    </div>
-                    <!-- Online Fields -->
-                    <div id="modal-online-fields" class="${bill.payment_method !== 'Online' ? 'hidden' : ''}">
-                        <div class="grid grid-cols-[140px_1fr] gap-2">
-                            <select id="modal-online-platform" class="input-field h-9 text-sm">
-                                <option value="">Select Platform</option>
-                                <option value="GPay" ${bill.online_platform === 'GPay' ? 'selected' : ''}>GPay</option>
-                                <option value="PhonePe" ${bill.online_platform === 'PhonePe' ? 'selected' : ''}>PhonePe</option>
-                                <option value="Paytm" ${bill.online_platform === 'Paytm' ? 'selected' : ''}>Paytm</option>
-                                <option value="Bank Transfer" ${bill.online_platform === 'Bank Transfer' ? 'selected' : ''}>Bank Transfer</option>
-                                <option value="Other" ${bill.online_platform === 'Other' ? 'selected' : ''}>Other</option>
-                            </select>
-                            <input type="text" id="modal-transaction-id" class="input-field h-9 text-sm" placeholder="UPI ID / Txn Ref" value="${bill.transaction_id || ''}">
-                        </div>
-                    </div>
-                    <button id="update-payment-btn" class="mt-3 btn-primary text-sm py-2 px-4 flex items-center gap-2">
-                        <i data-lucide="save" class="w-4 h-4"></i> Save Payment Details
-                    </button>
-                </div>
-            </div>
+ <!-- Editable Payment Method Section -->
+ <div id="modal-payment-section" class="col-span-2 mb-4 p-4 bg-emerald-50 rounded-lg border border-emerald-200 ${bill.payment_status !== 'Paid' ? 'hidden' : ''}">
+ <label class="block text-sm font-medium text-emerald-700 mb-2">Payment Method</label>
+ <div class="flex items-center gap-4 mb-3">
+ <label class="inline-flex items-center cursor-pointer">
+ <input type="radio" name="modal-payment-method" value="Cash" class="form-radio text-emerald-600" ${!bill.payment_method || bill.payment_method === 'Cash' ? 'checked' : ''}>
+ <span class="ml-2 text-sm text-zinc-700">Cash</span>
+ </label>
+ <label class="inline-flex items-center cursor-pointer">
+ <input type="radio" name="modal-payment-method" value="Online" class="form-radio text-emerald-600" ${bill.payment_method === 'Online' ? 'checked' : ''}>
+ <span class="ml-2 text-sm text-zinc-700">Online</span>
+ </label>
+ </div>
+ <!-- Cash Fields -->
+ <div id="modal-cash-fields" class="grid grid-cols-1 gap-2 ${bill.payment_method === 'Online' ? 'hidden' : ''}">
+ <input type="text" id="modal-cash-receiver" class="input-field h-9 text-sm" placeholder="Received By (Name)" value="${bill.cash_receiver || ''}">
+ </div>
+ <!-- Online Fields -->
+ <div id="modal-online-fields" class="${bill.payment_method !== 'Online' ? 'hidden' : ''}">
+ <div class="grid grid-cols-[140px_1fr] gap-2">
+ <select id="modal-online-platform" class="input-field h-9 text-sm">
+ <option value="">Select Platform</option>
+ <option value="GPay" ${bill.online_platform === 'GPay' ? 'selected' : ''}>GPay</option>
+ <option value="PhonePe" ${bill.online_platform === 'PhonePe' ? 'selected' : ''}>PhonePe</option>
+ <option value="Paytm" ${bill.online_platform === 'Paytm' ? 'selected' : ''}>Paytm</option>
+ <option value="Bank Transfer" ${bill.online_platform === 'Bank Transfer' ? 'selected' : ''}>Bank Transfer</option>
+ <option value="Other" ${bill.online_platform === 'Other' ? 'selected' : ''}>Other</option>
+ </select>
+ <input type="text" id="modal-transaction-id" class="input-field h-9 text-sm" placeholder="UPI ID / Txn Ref" value="${bill.transaction_id || ''}">
+ </div>
+ </div>
+ <button id="update-payment-btn" class="mt-3 btn-primary text-sm py-2 px-4 flex items-center gap-2">
+ <i data-lucide="save" class="w-4 h-4"></i> Save Payment Details
+ </button>
+ </div>
+ </div>
 
-            <label class="text-xs font-bold text-zinc-400 uppercase mb-2 block">Invoice Items</label>
-            <div class="border rounded-lg border-zinc-200 bg-zinc-50 p-4">
-                ${itemsHtml}
-            </div>
-            
-            ${bill.gst_applied ? `
-                <div class="mt-4 text-right text-sm text-zinc-500">
-                    Includes GST (18%)
-                </div>
-            ` : ''}
-        `;
+ <label class="text-xs font-bold text-zinc-400 uppercase mb-2 block">Invoice Items</label>
+ <div class="border rounded-lg border-zinc-200 bg-zinc-50 p-4">
+ ${itemsHtml}
+ </div>
+ 
+ ${bill.gst_applied ? `
+ <div class="mt-4 text-right text-sm text-zinc-500">
+ Includes GST (18%)
+ </div>
+ ` : ''}
+ `;
 
-        modal.classList.remove('hidden');
-        // In edit-mode, scroll the modal content to the payment/status section
-        if (editMode) {
-            setTimeout(() => {
-                const paymentSection = container.querySelector('#modal-payment-section');
-                const statusSelect = container.querySelector('#modal-status-select');
-                if (paymentSection && !paymentSection.classList.contains('hidden')) {
-                    paymentSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                } else if (statusSelect) {
-                    statusSelect.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }, 100);
-        }
+ modal.classList.remove('hidden');
+ // In edit-mode, scroll the modal content to the payment/status section
+ if (editMode) {
+ setTimeout(() => {
+ const paymentSection = container.querySelector('#modal-payment-section');
+ const statusSelect = container.querySelector('#modal-status-select');
+ if (paymentSection && !paymentSection.classList.contains('hidden')) {
+ paymentSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+ } else if (statusSelect) {
+ statusSelect.scrollIntoView({ behavior: 'smooth', block: 'start' });
+ }
+ }, 100);
+ }
 
-        // Modal Download Handler
-        modalDownloadBtn.onclick = async () => {
-            try {
-                await generateAndDownloadPDF(bill);
-            } catch (error) {
-                console.error(error);
-                alert("Error generating PDF: " + error.message);
-            }
-        };
+ // Modal Download Handler
+ modalDownloadBtn.onclick = async () => {
+ try {
+ await generateAndDownloadPDF(bill);
+ } catch (error) {
+ console.error(error);
+ alert("Error generating PDF: " + error.message);
+ }
+ };
 
-        // Payment Section Elements (Inside Modal Scope)
-        const modalPaymentSection = container.querySelector('#modal-payment-section');
-        const modalStatusSelect = container.querySelector('#modal-status-select');
-        const modalPaymentRadios = container.querySelectorAll('input[name="modal-payment-method"]');
-        const modalCashFields = container.querySelector('#modal-cash-fields');
-        const modalOnlineFields = container.querySelector('#modal-online-fields');
-        const updatePaymentBtn = container.querySelector('#update-payment-btn');
+ // Payment Section Elements (Inside Modal Scope)
+ const modalPaymentSection = container.querySelector('#modal-payment-section');
+ const modalStatusSelect = container.querySelector('#modal-status-select');
+ const modalPaymentRadios = container.querySelectorAll('input[name="modal-payment-method"]');
+ const modalCashFields = container.querySelector('#modal-cash-fields');
+ const modalOnlineFields = container.querySelector('#modal-online-fields');
+ const updatePaymentBtn = container.querySelector('#update-payment-btn');
 
-        // Toggle payment section visibility based on status
-        modalStatusSelect.addEventListener('change', (e) => {
-            if (e.target.value === 'Paid') {
-                modalPaymentSection.classList.remove('hidden');
-            } else {
-                modalPaymentSection.classList.add('hidden');
-            }
-        });
+ // Toggle payment section visibility based on status
+ modalStatusSelect.addEventListener('change', (e) => {
+ if (e.target.value === 'Paid') {
+ modalPaymentSection.classList.remove('hidden');
+ } else {
+ modalPaymentSection.classList.add('hidden');
+ }
+ });
 
-        // Toggle Cash/Online fields based on payment method selection
-        modalPaymentRadios.forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                if (e.target.value === 'Cash') {
-                    modalCashFields.classList.remove('hidden');
-                    modalOnlineFields.classList.add('hidden');
-                } else {
-                    modalCashFields.classList.add('hidden');
-                    modalOnlineFields.classList.remove('hidden');
-                }
-            });
-        });
+ // Toggle Cash/Online fields based on payment method selection
+ modalPaymentRadios.forEach(radio => {
+ radio.addEventListener('change', (e) => {
+ if (e.target.value === 'Cash') {
+ modalCashFields.classList.remove('hidden');
+ modalOnlineFields.classList.add('hidden');
+ } else {
+ modalCashFields.classList.add('hidden');
+ modalOnlineFields.classList.remove('hidden');
+ }
+ });
+ });
 
-        // Save Payment Details Handler
-        if (updatePaymentBtn) {
-            updatePaymentBtn.onclick = async () => {
-                const newStatus = modalStatusSelect.value;
-                const paymentMethod = container.querySelector('input[name="modal-payment-method"]:checked')?.value || 'Cash';
+ // Save Payment Details Handler
+ if (updatePaymentBtn) {
+ updatePaymentBtn.onclick = async () => {
+ const newStatus = modalStatusSelect.value;
+ const paymentMethod = container.querySelector('input[name="modal-payment-method"]:checked')?.value || 'Cash';
 
-                let updateData = {
-                    payment_status: newStatus
-                };
+ let updateData = {
+ payment_status: newStatus
+ };
 
-                if (newStatus === 'Paid') {
-                    updateData.payment_method = paymentMethod;
-                    if (paymentMethod === 'Cash') {
-                        updateData.cash_receiver = container.querySelector('#modal-cash-receiver').value || null;
-                        updateData.online_platform = null;
-                        updateData.transaction_id = null;
-                    } else {
-                        updateData.online_platform = container.querySelector('#modal-online-platform').value || null;
-                        updateData.transaction_id = container.querySelector('#modal-transaction-id').value || null;
-                        updateData.cash_receiver = null;
-                    }
-                } else {
-                    // If pending, clear payment details
-                    updateData.payment_method = null;
-                    updateData.cash_receiver = null;
-                    updateData.online_platform = null;
-                    updateData.transaction_id = null;
-                }
+ if (newStatus === 'Paid') {
+ updateData.payment_method = paymentMethod;
+ if (paymentMethod === 'Cash') {
+ updateData.cash_receiver = container.querySelector('#modal-cash-receiver').value || null;
+ updateData.online_platform = null;
+ updateData.transaction_id = null;
+ } else {
+ updateData.online_platform = container.querySelector('#modal-online-platform').value || null;
+ updateData.transaction_id = container.querySelector('#modal-transaction-id').value || null;
+ updateData.cash_receiver = null;
+ }
+ } else {
+ // If pending, clear payment details
+ updateData.payment_method = null;
+ updateData.cash_receiver = null;
+ updateData.online_platform = null;
+ updateData.transaction_id = null;
+ }
 
-                const { error } = await supabase.from('bills').update(updateData).eq('id', bill.id);
+ const { error } = await supabase.from('bills').update(updateData).eq('id', bill.id);
 
-                if (error) {
-                    alert('Error updating payment details: ' + error.message);
-                } else {
-                    // Update local object
-                    Object.assign(bill, updateData);
+ if (error) {
+ alert('Error updating payment details: ' + error.message);
+ } else {
+ // Update local object
+ Object.assign(bill, updateData);
 
-                    // Feedback
-                    const btnText = updatePaymentBtn.innerHTML;
-                    updatePaymentBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Saved!';
-                    updatePaymentBtn.classList.remove('btn-primary');
-                    updatePaymentBtn.classList.add('bg-green-600', 'text-white');
-                    if (window.lucide) window.lucide.createIcons();
+ // Feedback
+ const btnText = updatePaymentBtn.innerHTML;
+ updatePaymentBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Saved!';
+ updatePaymentBtn.classList.remove('btn-primary');
+ updatePaymentBtn.classList.add('bg-green-600', 'text-white');
+ if (window.lucide) window.lucide.createIcons();
 
-                    setTimeout(() => {
-                        updatePaymentBtn.innerHTML = '<i data-lucide="save" class="w-4 h-4"></i> Save Payment Details';
-                        updatePaymentBtn.classList.add('btn-primary');
-                        updatePaymentBtn.classList.remove('bg-green-600', 'text-white');
-                        if (window.lucide) window.lucide.createIcons();
-                        fetchBills(); // Refresh main list
-                    }, 1500);
-                }
-            };
-        }
+ setTimeout(() => {
+ updatePaymentBtn.innerHTML = '<i data-lucide="save" class="w-4 h-4"></i> Save Payment Details';
+ updatePaymentBtn.classList.add('btn-primary');
+ updatePaymentBtn.classList.remove('bg-green-600', 'text-white');
+ if (window.lucide) window.lucide.createIcons();
+ fetchBills(); // Refresh main list
+ }, 1500);
+ }
+ };
+ }
 
-        if (window.lucide) window.lucide.createIcons();
-    }
+ if (window.lucide) window.lucide.createIcons();
+ }
 
-    closeModalBtns.forEach(btn => {
-        btn?.addEventListener('click', () => modal.classList.add('hidden'));
-    });
+ closeModalBtns.forEach(btn => {
+ btn?.addEventListener('click', () => modal.classList.add('hidden'));
+ });
 
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) modal.classList.add('hidden');
-    });
-
-
-
-    // --- Fetch ---
-    async function fetchBills() {
-        let query = supabase
-            .from('bills')
-            .select('*')
-            .order('created_at', { ascending: false });
-        if (storeId) query = query.eq('store_id', storeId);
-        const { data, error } = await query;
-
-        if (error) {
-            tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-red-500">Error loading data</td></tr>`;
-            return;
-        }
-
-        bills = data;
-        renderTable();
-    }
-
-    // --- Render Table ---
-    function renderTable() {
-        if (bills.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-zinc-400">No invoices found</td></tr>`;
-            return;
-        }
-
-        tbody.innerHTML = bills.map(b => {
-            // Build payment details display
-            let paymentDetails = '-';
-            if (b.payment_status === 'Paid' && b.payment_method) {
-                if (b.payment_method === 'Cash') {
-                    paymentDetails = `<span class="text-emerald-600 font-medium">Cash</span>`;
-                    if (b.cash_receiver) {
-                        paymentDetails += `<div class="text-xs text-zinc-400">By: ${b.cash_receiver}</div>`;
-                    }
-                } else if (b.payment_method === 'Online') {
-                    paymentDetails = `<span class="text-blue-600 font-medium">${b.online_platform || 'Online'}</span>`;
-                    if (b.transaction_id) {
-                        paymentDetails += `<div class="text-xs text-zinc-400">${b.transaction_id}</div>`;
-                    }
-                }
-            }
-
-            return `
-            <tr class="hover:bg-zinc-50 transition-colors">
-                <td class="p-4 font-mono text-xs text-zinc-500 font-bold">${b.invoice_number || '#' + b.id.slice(0, 8).toUpperCase()}</td>
-                <td class="p-4">${new Date(b.created_at).toLocaleDateString()}</td>
-                <td class="p-4 font-medium text-zinc-900">
-                    ${b.customer_name || 'Walk-in'}
-                    <div class="text-xs text-zinc-400">${b.customer_phone || ''}</div>
-                </td>
-                <td class="p-4 text-center">
-                    <span class="px-2 py-1 rounded text-xs font-bold 
-                        ${b.payment_status === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
-                        ${b.payment_status || 'Paid'}
-                    </span>
-                </td>
-                <td class="p-4 text-center">
-                    ${paymentDetails}
-                </td>
-                <td class="p-4 text-right font-bold text-zinc-900">₹${b.total_amount.toFixed(2)}</td>
-                <td class="p-4 text-right">
-                    <button class="menu-trigger p-2 rounded-full hover:bg-zinc-200 text-zinc-400 transition-colors" data-id="${b.id}">
-                        <i data-lucide="more-vertical" class="w-4 h-4"></i>
-                    </button>
-                </td>
-            </tr>
-        `}).join('');
-
-        if (window.lucide) window.lucide.createIcons();
-        attachRowListeners();
-    }
-
-    function attachRowListeners() {
-        tbody.querySelectorAll('.menu-trigger').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const id = btn.dataset.id;
-                const bill = bills.find(b => b.id === id);
-                if (bill) showPopup(btn, bill);
-            });
-        });
-    }
+ modal.addEventListener('click', (e) => {
+ if (e.target === modal) modal.classList.add('hidden');
+ });
 
 
-    // CSV Report
-    container.querySelector('#download-all-report').addEventListener('click', () => {
-        if (bills.length === 0) return;
 
-        // Escape a value for safe CSV output (handles commas, quotes, newlines, injection)
-        const csvEscape = (val) => {
-            const s = String(val ?? '');
-            // Prefix with apostrophe any value that starts with formula characters
-            const safe = /^[=+\-@]/.test(s) ? `'${s}` : s;
-            return /[",\n\r]/.test(safe) ? `"${safe.replace(/"/g, '""')}"` : safe;
-        };
+ // --- Fetch ---
+ async function fetchBills() {
+ let query = supabase
+ .from('bills')
+ .select('*')
+ .order('created_at', { ascending: false });
+ if (storeId) query = query.eq('store_id', storeId);
+ const { data, error } = await query;
 
-        let csv = "Invoice No,Date,Customer,Phone,Status,GST Applied,Total Amount\n";
+ if (error) {
+ tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-red-500">Error loading data</td></tr>`;
+ return;
+ }
 
-        csv += bills.map(b => {
-            const invNum = b.invoice_number || `#${b.id.slice(0, 8).toUpperCase()}`;
-            return [
-                csvEscape(invNum),
-                csvEscape(new Date(b.created_at).toLocaleDateString()),
-                csvEscape(b.customer_name || 'Walk-in'),
-                csvEscape(b.customer_phone || ''),
-                csvEscape(b.payment_status || 'Paid'),
-                csvEscape(b.gst_applied),
-                csvEscape(b.total_amount)
-            ].join(',');
-        }).join("\n");
+ bills = data;
+ renderTable();
+ }
 
-        const encodedUri = encodeURI("data:text/csv;charset=utf-8," + csv);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `invoices_export_${new Date().toISOString().split('T')[0]}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    });
+ // --- Render Table ---
+ function renderTable() {
+ if (bills.length === 0) {
+ tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-zinc-400">No invoices found</td></tr>`;
+ return;
+ }
 
-    fetchBills();
+ tbody.innerHTML = bills.map(b => {
+ // Build payment details display
+ let paymentDetails = '-';
+ if (b.payment_status === 'Paid' && b.payment_method) {
+ if (b.payment_method === 'Cash') {
+ paymentDetails = `<span class="text-emerald-600 font-medium">Cash</span>`;
+ if (b.cash_receiver) {
+ paymentDetails += `<div class="text-xs text-zinc-400">By: ${b.cash_receiver}</div>`;
+ }
+ } else if (b.payment_method === 'Online') {
+ paymentDetails = `<span class="text-blue-600 font-medium">${b.online_platform || 'Online'}</span>`;
+ if (b.transaction_id) {
+ paymentDetails += `<div class="text-xs text-zinc-400">${b.transaction_id}</div>`;
+ }
+ }
+ }
+
+ return `
+ <tr class="hover:bg-zinc-50 transition-colors">
+ <td class="p-4 font-mono text-xs text-zinc-500 font-bold">${b.invoice_number || '#' + b.id.slice(0, 8).toUpperCase()}</td>
+ <td class="p-4">${new Date(b.created_at).toLocaleDateString()}</td>
+ <td class="p-4 font-medium text-zinc-900">
+ ${b.customer_name || 'Walk-in'}
+ <div class="text-xs text-zinc-400">${b.customer_phone || ''}</div>
+ </td>
+ <td class="p-4 text-center">
+ <span class="px-2 py-1 rounded text-xs font-bold 
+ ${b.payment_status === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+ ${b.payment_status || 'Paid'}
+ </span>
+ </td>
+ <td class="p-4 text-center">
+ ${paymentDetails}
+ </td>
+ <td class="p-4 text-right font-bold text-zinc-900">₹${b.total_amount.toFixed(2)}</td>
+ <td class="p-4 text-right">
+ <button class="menu-trigger p-2 rounded-full hover:bg-zinc-200 text-zinc-400 transition-colors" data-id="${b.id}">
+ <i data-lucide="more-vertical" class="w-4 h-4"></i>
+ </button>
+ </td>
+ </tr>
+ `}).join('');
+
+ if (window.lucide) window.lucide.createIcons();
+ attachRowListeners();
+ }
+
+ function attachRowListeners() {
+ tbody.querySelectorAll('.menu-trigger').forEach(btn => {
+ btn.addEventListener('click', (e) => {
+ e.stopPropagation();
+ const id = btn.dataset.id;
+ const bill = bills.find(b => b.id === id);
+ if (bill) showPopup(btn, bill);
+ });
+ });
+ }
+
+
+ // CSV Report
+ container.querySelector('#download-all-report').addEventListener('click', () => {
+ if (bills.length === 0) return;
+
+ // Escape a value for safe CSV output (handles commas, quotes, newlines, injection)
+ const csvEscape = (val) => {
+ const s = String(val ?? '');
+ // Prefix with apostrophe any value that starts with formula characters
+ const safe = /^[=+\-@]/.test(s) ? `'${s}` : s;
+ return /[",\n\r]/.test(safe) ? `"${safe.replace(/"/g, '""')}"` : safe;
+ };
+
+ let csv = "Invoice No,Date,Customer,Phone,Status,GST Applied,Total Amount\n";
+
+ csv += bills.map(b => {
+ const invNum = b.invoice_number || `#${b.id.slice(0, 8).toUpperCase()}`;
+ return [
+ csvEscape(invNum),
+ csvEscape(new Date(b.created_at).toLocaleDateString()),
+ csvEscape(b.customer_name || 'Walk-in'),
+ csvEscape(b.customer_phone || ''),
+ csvEscape(b.payment_status || 'Paid'),
+ csvEscape(b.gst_applied),
+ csvEscape(b.total_amount)
+ ].join(',');
+ }).join("\n");
+
+ const encodedUri = encodeURI("data:text/csv;charset=utf-8," + csv);
+ const link = document.createElement("a");
+ link.setAttribute("href", encodedUri);
+ link.setAttribute("download", `invoices_export_${new Date().toISOString().split('T')[0]}.csv`);
+ document.body.appendChild(link);
+ link.click();
+ document.body.removeChild(link);
+ });
+
+ fetchBills();
 }
 
 /* ==============================================================================
-   UPDATED PDF GENERATION (JRPL DESIGN) - Payment Method Section Removed
-   ============================================================================== */
+ UPDATED PDF GENERATION (JRPL DESIGN) - Payment Method Section Removed
+ ============================================================================== */
 async function generateAndDownloadPDF(billData) {
-    if (!billData) throw new Error("Bill data missing");
+ if (!billData) throw new Error("Bill data missing");
 
-    /* =========================
-       FETCH ITEMS
-    ========================== */
-    const { data: items, error } = await supabase
-        .from('bill_items')
-        .select('*')
-        .eq('bill_id', billData.id);
+ /* =========================
+ FETCH ITEMS
+ ========================== */
+ const { data: items, error } = await supabase
+ .from('bill_items')
+ .select('*')
+ .eq('bill_id', billData.id);
 
-    if (error) throw error;
+ if (error) throw error;
 
-    const doc = new jsPDF('p', 'mm', 'a4');
+ const doc = new jsPDF('p', 'mm', 'a4');
 
-    /* =========================
-       COMPANY INFO
-    ========================== */
-    const companyName = "JRPL | Jaysan Resource (P) Ltd.";
-    const companySer = "Computer Hardware and Peripherals Sales & Services";
-    const companyAddress = "Shop No. 3, Sameera Plaza, Naza Market, Lucknow (UP) - 226021";
-    const companyPhone = "Ph: +91 96346 23233 | Email: jaysanresource555@gmail.com";
-    const gstinText = COMPANY_CONFIG.gstin;
+ /* =========================
+ COMPANY INFO
+ ========================== */
+ const companyName = "JRPL | Jaysan Resource (P) Ltd.";
+ const companySer = "Computer Hardware and Peripherals Sales & Services";
+ const companyAddress = "Shop No. 3, Sameera Plaza, Naza Market, Lucknow (UP) - 226021";
+ const companyPhone = "Ph: +91 96346 23233 | Email: jaysanresource555@gmail.com";
+ const gstinText = COMPANY_CONFIG.gstin;
 
-    /* =========================
-       DB MAPPING
-    ========================== */
-    const invoiceNum =
-        billData.invoice_number || `#${billData.id.slice(0, 8).toUpperCase()}`;
+ /* =========================
+ DB MAPPING
+ ========================== */
+ const invoiceNum =
+ billData.invoice_number || `#${billData.id.slice(0, 8).toUpperCase()}`;
 
-    const custName = billData.customer_name || "Walk-in";
-    const custPhone = billData.customer_phone || "";
-    const total = billData.total_amount;
-    const isGst = billData.gst_applied;
+ const custName = billData.customer_name || "Walk-in";
+ const custPhone = billData.customer_phone || "";
+ const total = billData.total_amount;
+ const isGst = billData.gst_applied;
 
-    /* =========================
-       TAX CALCULATION
-    ========================== */
-    let subtotal = total;
-    let cgst = 0, sgst = 0, igst = 0;
-    const gstType = billData.gst_type || "CGST"; // optional column
+ /* =========================
+ TAX CALCULATION
+ ========================== */
+ let subtotal = total;
+ let cgst = 0, sgst = 0, igst = 0;
+ const gstType = billData.gst_type || "CGST"; // optional column
 
-    if (isGst) {
-        subtotal = total / 1.18;
-        if (gstType === "IGST") {
-            igst = subtotal * 0.18;
-        } else {
-            cgst = subtotal * 0.09;
-            sgst = subtotal * 0.09;
-        }
-    }
+ if (isGst) {
+ subtotal = total / 1.18;
+ if (gstType === "IGST") {
+ igst = subtotal * 0.18;
+ } else {
+ cgst = subtotal * 0.09;
+ sgst = subtotal * 0.09;
+ }
+ }
 
-    /* =========================
-       HEADER
-    ========================== */
-    doc.setFillColor(15, 23, 42);
-    doc.rect(0, 0, 210, 55, 'F');
+ /* =========================
+ HEADER
+ ========================== */
+ doc.setFillColor(15, 23, 42);
+ doc.rect(0, 0, 210, 55, 'F');
 
-    doc.setTextColor(255, 255, 255);
-    doc.setFont(undefined, 'bold');
-    doc.setFontSize(22);
-    doc.text(companyName, 14, 20);
+ doc.setTextColor(255, 255, 255);
+ doc.setFont(undefined, 'bold');
+ doc.setFontSize(22);
+ doc.text(companyName, 14, 20);
 
-    doc.setFont(undefined, 'normal');
-    doc.setFontSize(10);
+ doc.setFont(undefined, 'normal');
+ doc.setFontSize(10);
 
-    const leftX = 14;
-    const maxWidth = 120;
+ const leftX = 14;
+ const maxWidth = 120;
 
-    doc.text(companySer, leftX, 28, { maxWidth });
-    doc.text(companyAddress, leftX, 34, { maxWidth });
-    doc.text(companyPhone, leftX, 40, { maxWidth });
-    doc.text(gstinText, leftX, 46, { maxWidth });
+ doc.text(companySer, leftX, 28, { maxWidth });
+ doc.text(companyAddress, leftX, 34, { maxWidth });
+ doc.text(companyPhone, leftX, 40, { maxWidth });
+ doc.text(gstinText, leftX, 46, { maxWidth });
 
-    doc.setFontSize(26);
-    doc.setFont(undefined, 'bold');
-    doc.text("INVOICE", 195, 25, { align: 'right' });
+ doc.setFontSize(26);
+ doc.setFont(undefined, 'bold');
+ doc.text("INVOICE", 195, 25, { align: 'right' });
 
-    doc.setFontSize(10);
-    doc.setFont(undefined, 'normal');
-    doc.text(invoiceNum, 195, 33, { align: 'right' });
+ doc.setFontSize(10);
+ doc.setFont(undefined, 'normal');
+ doc.text(invoiceNum, 195, 33, { align: 'right' });
 
-    /* =========================
-       BILL TO
-    ========================== */
-    const yPos = 65;
+ /* =========================
+ BILL TO
+ ========================== */
+ const yPos = 65;
 
-    doc.setTextColor(100, 116, 139);
-    doc.setFontSize(9);
-    doc.text("BILL TO", 14, yPos);
+ doc.setTextColor(100, 116, 139);
+ doc.setFontSize(9);
+ doc.text("BILL TO", 14, yPos);
 
-    doc.setTextColor(15, 23, 42);
-    doc.setFontSize(12);
-    doc.setFont(undefined, 'bold');
-    doc.text(custName, 14, yPos + 6);
+ doc.setTextColor(15, 23, 42);
+ doc.setFontSize(12);
+ doc.setFont(undefined, 'bold');
+ doc.text(custName, 14, yPos + 6);
 
-    doc.setFontSize(10);
-    doc.setFont(undefined, 'normal');
-    if (custPhone) doc.text(custPhone, 14, yPos + 11);
+ doc.setFontSize(10);
+ doc.setFont(undefined, 'normal');
+ if (custPhone) doc.text(custPhone, 14, yPos + 11);
 
-    doc.setTextColor(100, 116, 139);
-    doc.setFontSize(9);
-    doc.text("DATE", 150, yPos);
-    doc.setTextColor(15, 23, 42);
-    doc.setFontSize(11);
-    doc.text(new Date(billData.created_at).toLocaleDateString(), 150, yPos + 6);
+ doc.setTextColor(100, 116, 139);
+ doc.setFontSize(9);
+ doc.text("DATE", 150, yPos);
+ doc.setTextColor(15, 23, 42);
+ doc.setFontSize(11);
+ doc.text(new Date(billData.created_at).toLocaleDateString(), 150, yPos + 6);
 
-    /* =========================
-       ITEMS TABLE
-    ========================== */
-    const tableData = items.map((item, i) => {
-        let desc = item.product_name;
-        if (item.serial_number) desc += `\nSN: ${item.serial_number}`;
-        if (item.problem) desc += `\nService: ${item.problem}`;
-        if (item.part_name) desc += `\nPart Changed: ${item.part_name}`;
+ /* =========================
+ ITEMS TABLE
+ ========================== */
+ const tableData = items.map((item, i) => {
+ let desc = item.product_name;
+ if (item.serial_number) desc += `\nSN: ${item.serial_number}`;
+ if (item.problem) desc += `\nService: ${item.problem}`;
+ if (item.part_name) desc += `\nPart Changed: ${item.part_name}`;
 
-        return [
-            i + 1,
-            desc,
-            item.quantity,
-            `INR ${item.price_at_sale.toFixed(2)}`,
-            `INR ${(item.price_at_sale * item.quantity).toFixed(2)}`
-        ];
-    });
+ return [
+ i + 1,
+ desc,
+ item.quantity,
+ `INR ${item.price_at_sale.toFixed(2)}`,
+ `INR ${(item.price_at_sale * item.quantity).toFixed(2)}`
+ ];
+ });
 
-    doc.autoTable({
-        head: [['#', 'Item Description', 'Qty', 'Price', 'Total']],
-        body: tableData,
-        startY: yPos + 25,
-        theme: 'plain',
-        styles: { fontSize: 10, cellPadding: 3 },
-        headStyles: {
-            fillColor: [248, 250, 252],
-            textColor: [100, 116, 139],
-            fontStyle: 'bold',
-            lineColor: [226, 232, 240],
-            lineWidth: 0.1
-        },
-        bodyStyles: { textColor: [51, 65, 85] },
-        columnStyles: {
-            0: { cellWidth: 15 },
-            1: { cellWidth: 'auto' },
-            2: { cellWidth: 20, halign: 'center' },
-            3: { cellWidth: 30, halign: 'right' },
-            4: { cellWidth: 35, halign: 'right' }
-        }
-    });
+ doc.autoTable({
+ head: [['#', 'Item Description', 'Qty', 'Price', 'Total']],
+ body: tableData,
+ startY: yPos + 25,
+ theme: 'plain',
+ styles: { fontSize: 10, cellPadding: 3 },
+ headStyles: {
+ fillColor: [248, 250, 252],
+ textColor: [100, 116, 139],
+ fontStyle: 'bold',
+ lineColor: [226, 232, 240],
+ lineWidth: 0.1
+ },
+ bodyStyles: { textColor: [51, 65, 85] },
+ columnStyles: {
+ 0: { cellWidth: 15 },
+ 1: { cellWidth: 'auto' },
+ 2: { cellWidth: 20, halign: 'center' },
+ 3: { cellWidth: 30, halign: 'right' },
+ 4: { cellWidth: 35, halign: 'right' }
+ }
+ });
 
-    /* =========================
-       TOTALS
-    ========================== */
-    let finY = doc.lastAutoTable.finalY + 10;
-    const xLabel = 140;
-    const xRight = 195;
+ /* =========================
+ TOTALS
+ ========================== */
+ let finY = doc.lastAutoTable.finalY + 10;
+ const xLabel = 140;
+ const xRight = 195;
 
-    if (finY > 250) {
-        doc.addPage();
-        finY = 20;
-    }
+ if (finY > 250) {
+ doc.addPage();
+ finY = 20;
+ }
 
-    doc.setFontSize(10);
-    doc.setTextColor(100, 116, 139);
-    doc.text("Subtotal", xLabel, finY);
-    doc.setTextColor(15, 23, 42);
-    doc.text(`INR ${subtotal.toFixed(2)}`, xRight, finY, { align: 'right' });
+ doc.setFontSize(10);
+ doc.setTextColor(100, 116, 139);
+ doc.text("Subtotal", xLabel, finY);
+ doc.setTextColor(15, 23, 42);
+ doc.text(`INR ${subtotal.toFixed(2)}`, xRight, finY, { align: 'right' });
 
-    if (isGst) {
-        if (gstType === "IGST") {
-            finY += 6;
-            doc.setTextColor(100, 116, 139);
-            doc.text("IGST (18%)", xLabel, finY);
-            doc.setTextColor(15, 23, 42);
-            doc.text(`INR ${igst.toFixed(2)}`, xRight, finY, { align: 'right' });
-        } else {
-            finY += 6;
-            doc.setTextColor(100, 116, 139);
-            doc.text("CGST (9%)", xLabel, finY);
-            doc.setTextColor(15, 23, 42);
-            doc.text(`INR ${cgst.toFixed(2)}`, xRight, finY, { align: 'right' });
+ if (isGst) {
+ if (gstType === "IGST") {
+ finY += 6;
+ doc.setTextColor(100, 116, 139);
+ doc.text("IGST (18%)", xLabel, finY);
+ doc.setTextColor(15, 23, 42);
+ doc.text(`INR ${igst.toFixed(2)}`, xRight, finY, { align: 'right' });
+ } else {
+ finY += 6;
+ doc.setTextColor(100, 116, 139);
+ doc.text("CGST (9%)", xLabel, finY);
+ doc.setTextColor(15, 23, 42);
+ doc.text(`INR ${cgst.toFixed(2)}`, xRight, finY, { align: 'right' });
 
-            finY += 6;
-            doc.setTextColor(100, 116, 139);
-            doc.text("SGST (9%)", xLabel, finY);
-            doc.setTextColor(15, 23, 42);
-            doc.text(`INR ${sgst.toFixed(2)}`, xRight, finY, { align: 'right' });
-        }
-    }
+ finY += 6;
+ doc.setTextColor(100, 116, 139);
+ doc.text("SGST (9%)", xLabel, finY);
+ doc.setTextColor(15, 23, 42);
+ doc.text(`INR ${sgst.toFixed(2)}`, xRight, finY, { align: 'right' });
+ }
+ }
 
-    doc.setDrawColor(226, 232, 240);
-    doc.line(130, finY + 6, 195, finY + 6);
+ doc.setDrawColor(226, 232, 240);
+ doc.line(130, finY + 6, 195, finY + 6);
 
-    doc.setFontSize(14);
-    doc.setFont(undefined, 'bold');
-    doc.text("Total", xLabel, finY + 16);
-    doc.text(`INR ${total.toFixed(2)}`, xRight, finY + 16, { align: 'right' });
+ doc.setFontSize(14);
+ doc.setFont(undefined, 'bold');
+ doc.text("Total", xLabel, finY + 16);
+ doc.text(`INR ${total.toFixed(2)}`, xRight, finY + 16, { align: 'right' });
 
-    /* =========================
-       PAYMENT METHOD (REMOVED)
-       ========================== */
-    // Payment method section removed as requested. 
-    // The PDF now ends with the totals, leaving space before the footer.
+ /* =========================
+ PAYMENT METHOD (REMOVED)
+ ========================== */
+ // Payment method section removed as requested. 
+ // The PDF now ends with the totals, leaving space before the footer.
 
-    /* =========================
-       FOOTER
-    ========================== */
-    const pageHeight = doc.internal.pageSize.height;
+ /* =========================
+ FOOTER
+ ========================== */
+ const pageHeight = doc.internal.pageSize.height;
 
-    doc.setFontSize(8);
-    doc.setTextColor(148, 163, 184);
-    doc.text("Thank you for your business!", 14, pageHeight - 20);
-    doc.text(
-        "www.jaysanresource.com | jaysanresource555@gmail.com | +91 96346 23233",
-        14,
-        pageHeight - 15
-    );
+ doc.setFontSize(8);
+ doc.setTextColor(148, 163, 184);
+ doc.text("Thank you for your business!", 14, pageHeight - 20);
+ doc.text(
+ "www.jaysanresource.com | jaysanresource555@gmail.com | +91 96346 23233",
+ 14,
+ pageHeight - 15
+ );
 
-    doc.setFillColor(59, 130, 246);
-    doc.rect(0, pageHeight - 2, 210, 2, 'F');
+ doc.setFillColor(59, 130, 246);
+ doc.rect(0, pageHeight - 2, 210, 2, 'F');
 
-    doc.save(`Invoice_${invoiceNum.replace(/\//g, '-')}.pdf`);
+ doc.save(`Invoice_${invoiceNum.replace(/\//g, '-')}.pdf`);
 }
