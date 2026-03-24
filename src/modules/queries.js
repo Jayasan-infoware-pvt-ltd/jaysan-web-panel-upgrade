@@ -5,7 +5,7 @@ export async function initQueries(container, storeId = null) {
     container.innerHTML = `
         <div class="space-y-6">
             <div class="flex justify-between items-center">
-                <h2 class="text-3xl font-bold text-slate-800">Customer Queries</h2>
+                <h2 class="text-2xl font-bold text-zinc-900">Customer Queries</h2>
                 ${storeId ? `
                 <button id="add-query-btn" class="btn-primary flex items-center gap-2">
                     <i data-lucide="plus" class="w-4 h-4"></i> Add Query
@@ -18,37 +18,37 @@ export async function initQueries(container, storeId = null) {
                 <div class="card p-4 bg-orange-50 border-orange-100 flex items-center gap-4">
                     <div class="p-3 bg-orange-100 rounded-full text-orange-600"><i data-lucide="clock" class="w-6 h-6"></i></div>
                     <div>
-                        <div class="text-sm text-slate-500">Pending Requests</div>
-                        <div class="text-xl font-bold text-slate-800" id="stat-pending">0</div>
+                        <div class="text-sm text-zinc-500">Pending Requests</div>
+                        <div class="text-xl font-bold text-zinc-900" id="stat-pending">0</div>
                     </div>
                 </div>
                 <div class="card p-4 bg-emerald-50 border-emerald-100 flex items-center gap-4">
                     <div class="p-3 bg-emerald-100 rounded-full text-emerald-600"><i data-lucide="check-circle" class="w-6 h-6"></i></div>
                     <div>
-                        <div class="text-sm text-slate-500">Resolved</div>
-                        <div class="text-xl font-bold text-slate-800" id="stat-resolved">0</div>
+                        <div class="text-sm text-zinc-500">Resolved</div>
+                        <div class="text-xl font-bold text-zinc-900" id="stat-resolved">0</div>
                     </div>
                 </div>
                 <div class="card p-4 bg-sky-50 border-sky-100 flex items-center gap-4">
                     <div class="p-3 bg-sky-100 rounded-full text-sky-600"><i data-lucide="message-circle" class="w-6 h-6"></i></div>
                     <div>
-                        <div class="text-sm text-slate-500">Total Queries</div>
-                        <div class="text-xl font-bold text-slate-800" id="stat-total">0</div>
+                        <div class="text-sm text-zinc-500">Total Queries</div>
+                        <div class="text-xl font-bold text-zinc-900" id="stat-total">0</div>
                     </div>
                 </div>
             </div>
 
             <div class="card overflow-hidden">
-                <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                    <h3 class="font-bold text-slate-700">Recent Queries</h3>
+                <div class="p-4 border-b border-zinc-100 flex justify-between items-center bg-zinc-50/50">
+                    <h3 class="font-bold text-zinc-700">Recent Queries</h3>
                     <div class="relative w-64">
-                         <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 pointer-events-none"></i>
+                         <i data-lucide="search" class="absolute left-3 top-1/2 -tranzinc-y-1/2 text-zinc-400 w-4 h-4 pointer-events-none"></i>
                          <input type="text" id="search-queries" placeholder="Search customer or item..." class="input-field pl-9 py-1.5 text-sm">
                     </div>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
-                        <thead class="bg-slate-50 text-xs text-slate-500 uppercase font-semibold border-b border-slate-200">
+                        <thead class="bg-zinc-50 text-xs text-zinc-500 uppercase font-semibold border-b border-zinc-200">
                             <tr>
                                 <th class="p-4">Date</th>
                                 <th class="p-4">Customer</th>
@@ -57,7 +57,7 @@ export async function initQueries(container, storeId = null) {
                                 <th class="p-4 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="queries-body" class="divide-y divide-slate-100 text-sm text-slate-600">
+                        <tbody id="queries-body" class="divide-y divide-zinc-100 text-sm text-zinc-600">
                             <tr><td colspan="5" class="p-8 text-center">Loading...</td></tr>
                         </tbody>
                     </table>
@@ -67,21 +67,21 @@ export async function initQueries(container, storeId = null) {
 
         <!-- Add Modal -->
         <div id="query-modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-[100] backdrop-blur-sm">
-            <div class="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-200">
-                <h3 id="modal-title" class="text-xl font-bold mb-4 text-slate-800">New Customer Query</h3>
+            <div class="bg-white rounded-xl p-6 w-full max-w-md shadow-lg animate-in zoom-in-95 duration-200">
+                <h3 id="modal-title" class="text-xl font-bold mb-4 text-zinc-900">New Customer Query</h3>
                 <input type="hidden" id="edit-query-id" value="">
                 <form id="query-form" class="space-y-4">
                     <div>
                         <label class="label">Customer Name</label>
                         <div class="relative">
-                            <i data-lucide="user" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 z-10"></i>
+                            <i data-lucide="user" class="absolute left-3 top-1/2 -tranzinc-y-1/2 w-5 h-5 text-zinc-400 z-10"></i>
                             <input type="text" id="q-name" required class="input-field pl-12" placeholder="Enter name">
                         </div>
                     </div>
                     <div>
                         <label class="label">Phone Number</label>
                         <div class="relative">
-                             <i data-lucide="phone" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 z-10"></i>
+                             <i data-lucide="phone" class="absolute left-3 top-1/2 -tranzinc-y-1/2 w-5 h-5 text-zinc-400 z-10"></i>
                             <input type="tel" id="q-phone" class="input-field pl-12" placeholder="Enter phone number">
                         </div>
                     </div>
@@ -128,19 +128,19 @@ export async function initQueries(container, storeId = null) {
 
     function renderList(list) {
         if (list.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400 italic">No queries recorded yet.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-zinc-400 italic">No queries recorded yet.</td></tr>`;
             return;
         }
 
         tbody.innerHTML = list.map(q => `
-            <tr class="hover:bg-slate-50 transition-colors group">
-                <td class="p-4 whitespace-nowrap text-slate-500">${new Date(q.created_at).toLocaleDateString()}</td>
+            <tr class="hover:bg-zinc-50 transition-colors group">
+                <td class="p-4 whitespace-nowrap text-zinc-500">${new Date(q.created_at).toLocaleDateString()}</td>
                 <td class="p-4">
-                    <div class="font-medium text-slate-800">${q.customer_name}</div>
-                    <div class="text-xs text-slate-400 font-mono">${q.phone_number || '-'}</div>
+                    <div class="font-medium text-zinc-900">${q.customer_name}</div>
+                    <div class="text-xs text-zinc-400 font-mono">${q.phone_number || '-'}</div>
                 </td>
                 <td class="p-4">
-                    <p class="text-slate-700 max-w-xs truncate" title="${q.requirement}">${q.requirement}</p>
+                    <p class="text-zinc-700 max-w-xs truncate" title="${q.requirement}">${q.requirement}</p>
                 </td>
                 <td class="p-4">
                     <span class="px-2 py-1 rounded-full text-xs font-bold 
@@ -149,15 +149,15 @@ export async function initQueries(container, storeId = null) {
                     </span>
                 </td>
                 <td class="p-4 text-right">
-                    <button class="edit-btn hover:text-blue-600 text-slate-400 mr-2 transition-colors" data-id="${q.id}" title="Edit">
+                    <button class="edit-btn hover:text-blue-600 text-zinc-400 mr-2 transition-colors" data-id="${q.id}" title="Edit">
                         <i data-lucide="pencil" class="w-4 h-4"></i>
                     </button>
                     ${q.status !== 'Resolved' ? `
-                        <button class="resolve-btn hover:text-emerald-600 text-slate-400 mr-2 transition-colors" data-id="${q.id}" title="Mark Resolved">
+                        <button class="resolve-btn hover:text-emerald-600 text-zinc-400 mr-2 transition-colors" data-id="${q.id}" title="Mark Resolved">
                             <i data-lucide="check-circle" class="w-5 h-5"></i>
                         </button>
                     ` : ''}
-                    <button class="delete-btn hover:text-red-500 text-slate-400 transition-colors" data-id="${q.id}" title="Delete">
+                    <button class="delete-btn hover:text-red-500 text-zinc-400 transition-colors" data-id="${q.id}" title="Delete">
                         <i data-lucide="trash-2" class="w-5 h-5"></i>
                     </button>
                 </td>

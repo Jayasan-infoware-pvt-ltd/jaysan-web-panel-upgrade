@@ -74,7 +74,7 @@ export function logout() {
 export function renderLogin(container) {
     container.innerHTML = `
         <div class="login-page">
-            <!-- Animated Background -->
+            <!-- Subtle Background -->
             <div class="login-bg">
                 <div class="login-orb login-orb-1"></div>
                 <div class="login-orb login-orb-2"></div>
@@ -85,7 +85,7 @@ export function renderLogin(container) {
                 <!-- Logo -->
                 <div class="login-logo">
                     <div class="login-logo-icon">
-                        <i data-lucide="zap" class="w-7 h-7"></i>
+                        <i data-lucide="zap" class="w-6 h-6"></i>
                     </div>
                     <h1 class="login-title">JRPL Panel</h1>
                     <p class="login-subtitle">Multi-Store Management System</p>
@@ -93,19 +93,13 @@ export function renderLogin(container) {
 
                 <form id="login-form" class="login-form">
                     <div class="form-group">
-                        <label class="form-label">
-                            <i data-lucide="user" class="w-3.5 h-3.5"></i>
-                            Username
-                        </label>
-                        <input type="text" id="username" class="form-input" placeholder="Enter username" required autocomplete="username">
+                        <label class="form-label">Username</label>
+                        <input type="text" id="username" class="form-input" placeholder="Enter your username" required autocomplete="username">
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">
-                            <i data-lucide="lock" class="w-3.5 h-3.5"></i>
-                            Password
-                        </label>
-                        <input type="password" id="password" class="form-input" placeholder="Enter password" required autocomplete="current-password">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="password" class="form-input" placeholder="Enter your password" required autocomplete="current-password">
                     </div>
 
                     <div id="login-error" class="login-error hidden">

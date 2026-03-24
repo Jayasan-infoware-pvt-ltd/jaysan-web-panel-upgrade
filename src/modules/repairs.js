@@ -4,19 +4,19 @@ export async function initRepairs(container, storeId = null) {
     container.innerHTML = `
         <div class="space-y-6 h-full flex flex-col">
             <div class="flex justify-between items-center shrink-0">
-                <h2 class="text-3xl font-bold text-slate-800">Repair Panel</h2>
+                <h2 class="text-2xl font-bold text-zinc-900">Repair Panel</h2>
                 <button id="add-repair-btn" class="btn-primary flex items-center gap-2 ${!storeId ? 'hidden' : ''}">
                     <i data-lucide="plus" class="w-4 h-4"></i> New Entry
                 </button>
             </div>
 
             <!-- Kanban Board -->
-            <div class="flex-1 min-h-0 overflow-x-auto overflow-y-hidden pb-4">
+            <div class="flex-1 min-h-0 overflow-x-auto overflow-y-hidden custom-scrollbar">
                 <div class="flex gap-6 h-full min-w-[1500px] items-start pb-2"> 
                     ${[
-                        { name: 'Received', color: 'bg-slate-50 border-slate-200 text-slate-700', icon: 'inbox' },
+                        { name: 'Received', color: 'bg-zinc-50 border-zinc-200 text-zinc-700', icon: 'inbox' },
                         { name: 'In Process', color: 'bg-blue-50 border-blue-100 text-blue-700', icon: 'refresh-cw' },
-                        { name: 'Part Not Available', color: 'bg-rose-50 border-rose-100 text-rose-700', icon: 'alert-circle' },
+                        { name: 'Part Not Available', color: 'bg-red-50 border-red-100 text-red-700', icon: 'alert-circle' },
                         { name: 'Repaired', color: 'bg-indigo-50 border-indigo-100 text-indigo-700', icon: 'check-circle' },
                         { name: 'Delivered (Payment Pending)', color: 'bg-orange-50 border-orange-100 text-orange-700', icon: 'clock' },
                         { name: 'Delivered', color: 'bg-emerald-50 border-emerald-100 text-emerald-700', icon: 'check-all' }
@@ -39,41 +39,41 @@ export async function initRepairs(container, storeId = null) {
 
         <!-- Repair Modal -->
         <div id="repair-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
-            <div class="bg-white rounded-xl p-6 w-full max-w-2xl shadow-2xl h-[90vh] overflow-y-auto">
+            <div class="bg-white rounded-xl p-6 w-full max-w-2xl shadow-lg h-[90vh] overflow-y-auto">
                 <h3 id="repair-modal-title" class="text-xl font-bold mb-4">New Repair Entry</h3>
                 <form id="repair-form" class="space-y-4">
                     <input type="hidden" id="repair-id">
                     
                     <!-- Customer Section -->
-                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
-                        <h4 class="text-xs font-bold text-slate-500 uppercase mb-2">Customer Details</h4>
+                    <div class="p-3 bg-zinc-50 rounded-lg border border-zinc-100">
+                        <h4 class="text-xs font-bold text-zinc-500 uppercase mb-2">Customer Details</h4>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Name</label>
+                                <label class="block text-sm font-medium text-zinc-700 mb-1">Name</label>
                                 <input type="text" id="cust-name" required class="input-field">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Contact</label>
+                                <label class="block text-sm font-medium text-zinc-700 mb-1">Contact</label>
                                 <input type="text" id="cust-contact" class="input-field">
                             </div>
                         </div>
                     </div>
 
                     <!-- Device Section -->
-                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
-                         <h4 class="text-xs font-bold text-slate-500 uppercase mb-2">Device Details</h4>
+                    <div class="p-3 bg-zinc-50 rounded-lg border border-zinc-100">
+                         <h4 class="text-xs font-bold text-zinc-500 uppercase mb-2">Device Details</h4>
                          <div class="grid grid-cols-2 gap-4 mb-3">
                              <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Device Name</label>
+                                <label class="block text-sm font-medium text-zinc-700 mb-1">Device Name</label>
                                 <input type="text" id="device-info" required class="input-field" placeholder="Samsung S21">
                              </div>
                              <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Model Number <span class="text-red-500">*</span></label>
+                                <label class="block text-sm font-medium text-zinc-700 mb-1">Model Number <span class="text-red-500">*</span></label>
                                 <input type="text" id="model-number" required class="input-field" placeholder="SM-G991B">
                              </div>
                          </div>
                          <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Serial Number <span class="text-red-500">*</span></label>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1">Serial Number <span class="text-red-500">*</span></label>
                             <input type="text" id="serial-number" required class="input-field" placeholder="IMEI / SN">
                         </div>
                     </div>
@@ -81,11 +81,11 @@ export async function initRepairs(container, storeId = null) {
                     <!-- Issues Section -->
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Problem (Customer)</label>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1">Problem (Customer)</label>
                             <textarea id="issue-desc" class="input-field h-20 resize-none"></textarea>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Problem Found (Tech)</label>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1">Problem Found (Tech)</label>
                             <textarea id="problem-found" class="input-field h-20 resize-none"></textarea>
                         </div>
                     </div>
@@ -96,11 +96,11 @@ export async function initRepairs(container, storeId = null) {
                          
                          <div class="grid grid-cols-2 gap-4 mb-4">
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Technician Name</label>
+                                <label class="block text-sm font-medium text-zinc-700 mb-1">Technician Name</label>
                                 <input type="text" id="technician-name" class="input-field text-sm">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Est. Cost</label>
+                                <label class="block text-sm font-medium text-zinc-700 mb-1">Est. Cost</label>
                                 <input type="number" id="repair-cost" class="input-field text-sm">
                             </div>
                          </div>
@@ -108,17 +108,17 @@ export async function initRepairs(container, storeId = null) {
                          <div class="flex items-center gap-6 mb-4">
                             <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" id="check-part-change" class="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
-                                <span class="text-sm font-medium text-slate-700">Part Change?</span>
+                                <span class="text-sm font-medium text-zinc-700">Part Change?</span>
                             </label>
 
                             <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" id="check-service-only" class="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
-                                <span class="text-sm font-medium text-slate-700">Service Only?</span>
+                                <span class="text-sm font-medium text-zinc-700">Service Only?</span>
                             </label>
                          </div>
 
                          <div id="part-name-wrapper" class="hidden">
-                             <label class="block text-sm font-medium text-slate-700 mb-1">Part Name</label>
+                             <label class="block text-sm font-medium text-zinc-700 mb-1">Part Name</label>
                              <input type="text" id="part-replaced-name" class="input-field bg-white" placeholder="Enter name of part replaced">
                          </div>
                     </div>
@@ -126,7 +126,7 @@ export async function initRepairs(container, storeId = null) {
                     <!-- Status -->
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Current Status</label>
+                                <label class="block text-sm font-medium text-zinc-700 mb-1">Current Status</label>
                                 <select id="repair-status" class="input-field">
                                 <option value="Received">Received</option>
                                 <option value="In Process">In Process</option>
@@ -138,7 +138,7 @@ export async function initRepairs(container, storeId = null) {
                         </div>
                     </div>
 
-                    <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100">
+                    <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-zinc-100">
                         <button type="button" id="cancel-repair-modal" class="btn-secondary">Cancel</button>
                         <button type="submit" class="btn-primary">Save Entry</button>
                     </div>
@@ -192,20 +192,20 @@ export async function initRepairs(container, storeId = null) {
 
             items.forEach(item => {
                 const card = document.createElement('div');
-                card.className = 'bg-white p-4 rounded-xl shadow-sm border border-slate-200/60 cursor-pointer hover:shadow-md hover:border-blue-400/50 transition-all group relative overflow-hidden';
+                card.className = 'bg-white p-4 rounded-xl shadow-sm border border-zinc-200/60 cursor-pointer hover:shadow-md hover:border-blue-400/50 transition-all group relative overflow-hidden';
                 card.innerHTML = `
-                    <div class="absolute top-0 right-0 w-16 h-16 -mr-8 -mt-8 bg-slate-50 rounded-full opacity-50 group-hover:bg-blue-50 transition-colors"></div>
+                    <div class="absolute top-0 right-0 w-16 h-16 -mr-8 -mt-8 bg-zinc-50 rounded-full opacity-50 group-hover:bg-blue-50 transition-colors"></div>
                     <div class="relative">
                         <div class="flex justify-between items-start mb-2">
-                            <h4 class="font-bold text-slate-900 group-hover:text-blue-700 transition-colors">${item.customer_name}</h4>
-                            <span class="text-[10px] font-medium text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100">${new Date(item.created_at).toLocaleDateString()}</span>
+                            <h4 class="font-bold text-zinc-900 group-hover:text-blue-700 transition-colors">${item.customer_name}</h4>
+                            <span class="text-[10px] font-medium text-zinc-400 bg-zinc-50 px-1.5 py-0.5 rounded border border-zinc-100">${new Date(item.created_at).toLocaleDateString()}</span>
                         </div>
                         <div class="flex items-center gap-2 mb-2">
-                            <i data-lucide="smartphone" class="w-3 h-3 text-slate-400"></i>
-                            <p class="text-xs text-slate-600 font-semibold truncate capitalize">${item.device_details}</p>
+                            <i data-lucide="smartphone" class="w-3 h-3 text-zinc-400"></i>
+                            <p class="text-xs text-zinc-600 font-semibold truncate capitalize">${item.device_details}</p>
                         </div>
-                        <div class="bg-slate-50/80 rounded-lg p-2 mb-3 border border-slate-100/50">
-                             <p class="text-[10px] text-slate-500 line-clamp-2 italic">${item.issue_description || 'No description provided'}</p>
+                        <div class="bg-zinc-50/80 rounded-lg p-2 mb-3 border border-zinc-100/50">
+                             <p class="text-[10px] text-zinc-500 line-clamp-2 italic">${item.issue_description || 'No description provided'}</p>
                         </div>
                         ${item.status === 'Delivered' && item.delivered_at ? `
                             <div class="flex items-center gap-1.5 mb-3 px-1">
@@ -213,14 +213,14 @@ export async function initRepairs(container, storeId = null) {
                                 <p class="text-[10px] text-emerald-600 font-semibold">Delivered: ${new Date(item.delivered_at).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</p>
                             </div>
                         ` : ''}
-                        <div class="flex justify-between items-center bg-slate-50 -mx-4 -mb-4 px-4 py-2 mt-2 border-t border-slate-100">
+                        <div class="flex justify-between items-center bg-zinc-50 -mx-4 -mb-4 px-4 py-2 mt-2 border-t border-zinc-100">
                             <div class="flex items-center gap-1.5">
                                 <div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                                <span class="text-[10px] font-bold text-slate-500 tracking-tight">#${item.contact_number?.slice(-4) || '----'}</span>
+                                <span class="text-[10px] font-bold text-zinc-500 tracking-tight">#${item.contact_number?.slice(-4) || '----'}</span>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="text-[11px] font-bold text-slate-700">₹${item.estimated_cost || 0}</span>
-                                <button class="edit-repair bg-white h-7 w-7 flex items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:text-blue-600 hover:border-blue-200 shadow-sm transition-all focus:ring-2 focus:ring-blue-100">
+                                <span class="text-[11px] font-bold text-zinc-700">₹${item.estimated_cost || 0}</span>
+                                <button class="edit-repair bg-white h-7 w-7 flex items-center justify-center rounded-lg border border-zinc-200 text-zinc-400 hover:text-blue-600 hover:border-blue-200 shadow-sm transition-all focus:ring-2 focus:ring-blue-100">
                                     <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
                                 </button>
                             </div>

@@ -5,11 +5,11 @@ export function initBackup(container, storeId = null) {
     container.innerHTML = `
         <div class="space-y-6">
             <div class="flex items-center gap-3">
-                <h2 class="text-3xl font-bold text-slate-800">Data Backup & Restore</h2>
+                <h2 class="text-2xl font-bold text-zinc-900">Data Backup & Restore</h2>
                 <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-bold border border-amber-200">Admin Only</span>
             </div>
 
-            <p class="text-slate-500 max-w-2xl">
+            <p class="text-zinc-500 max-w-2xl">
                 Securely export your entire database to a JSON file or restore data from a previous backup. 
                 <br><strong>Note:</strong> Restore operations require the Administrator Password.
             </p>
@@ -23,16 +23,16 @@ export function initBackup(container, storeId = null) {
                             <i data-lucide="download" class="w-8 h-8"></i>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-slate-800">Export / Backup</h3>
-                            <p class="text-sm text-slate-500">Download all data as a .json file</p>
+                            <h3 class="text-xl font-bold text-zinc-900">Export / Backup</h3>
+                            <p class="text-sm text-zinc-500">Download all data as a .json file</p>
                         </div>
                     </div>
                     
                     <div class="space-y-4">
-                        <div class="p-4 bg-slate-50 rounded-lg text-sm text-slate-600 border border-slate-100">
+                        <div class="p-4 bg-zinc-50 rounded-lg text-sm text-zinc-600 border border-zinc-100">
                             <strong>Includes:</strong> Products, Stock Levels, Repairs, Bills, Sales History, Expenditures, and Customer Queries.
                         </div>
-                        <button id="start-backup-btn" class="btn-primary w-full py-4 text-lg shadow-emerald-200 shadow-lg hover:shadow-xl transition-all">
+                        <button id="start-backup-btn" class="btn-primary w-full py-4 text-lg shadow-emerald-200 shadow-sm hover:shadow-md transition-all">
                             Download Backup File
                         </button>
                         <div id="backup-status" class="text-center text-sm font-medium h-6"></div>
@@ -46,8 +46,8 @@ export function initBackup(container, storeId = null) {
                             <i data-lucide="upload" class="w-8 h-8"></i>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-slate-800">Restore Data</h3>
-                            <p class="text-sm text-slate-500">Import data from a backup file</p>
+                            <h3 class="text-xl font-bold text-zinc-900">Restore Data</h3>
+                            <p class="text-sm text-zinc-500">Import data from a backup file</p>
                         </div>
                     </div>
 
@@ -58,7 +58,7 @@ export function initBackup(container, storeId = null) {
                         </div>
                         
                         <div class="relative group">
-                            <input type="file" id="restore-file-input" accept=".json" class="bs-file-input block w-full text-sm text-slate-500
+                            <input type="file" id="restore-file-input" accept=".json" class="bs-file-input block w-full text-sm text-zinc-500
                               file:mr-4 file:py-3 file:px-4
                               file:rounded-full file:border-0
                               file:text-sm file:font-semibold
@@ -88,7 +88,7 @@ export function initBackup(container, storeId = null) {
         backupBtn.disabled = true;
         backupBtn.textContent = 'Gathering Data...';
         backupStatus.textContent = 'Fetching tables...';
-        backupStatus.className = 'text-center text-sm font-medium h-6 text-slate-500';
+        backupStatus.className = 'text-center text-sm font-medium h-6 text-zinc-500';
 
         try {
             const tables = ['products', 'expenditures', 'customer_queries', 'bills', 'bill_items', 'repairs'];

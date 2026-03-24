@@ -9,8 +9,8 @@ export async function initStoreManagement(container) {
         <div class="space-y-6">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h2 class="text-2xl font-bold text-slate-800">Store Management</h2>
-                    <p class="text-slate-500 text-sm mt-1">Manage stores and create store admin accounts</p>
+                    <h2 class="text-2xl font-bold text-zinc-900">Store Management</h2>
+                    <p class="text-zinc-500 text-sm mt-1">Manage stores and create store admin accounts</p>
                 </div>
                 <div class="flex gap-3">
                     <button id="add-store-btn" class="btn-primary">
@@ -24,19 +24,19 @@ export async function initStoreManagement(container) {
 
             <!-- Stores Grid -->
             <div>
-                <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+                <h3 class="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-3 flex items-center gap-2">
                     <i data-lucide="building-2" class="w-4 h-4"></i> Stores
                 </h3>
                 <div id="stores-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div class="p-8 text-center text-slate-400">Loading...</div>
+                    <div class="p-8 text-center text-zinc-400">Loading...</div>
                 </div>
             </div>
 
             <!-- Store Admins Table -->
             <div class="card">
-                <div class="p-4 border-b border-slate-100 bg-slate-50/50">
-                    <h3 class="font-semibold text-slate-700 flex items-center gap-2 text-sm">
-                        <i data-lucide="users" class="w-4 h-4 text-slate-400"></i> Store Admin Accounts
+                <div class="p-4 border-b border-zinc-100 bg-zinc-50/50">
+                    <h3 class="font-semibold text-zinc-700 flex items-center gap-2 text-sm">
+                        <i data-lucide="users" class="w-4 h-4 text-zinc-400"></i> Store Admin Accounts
                     </h3>
                 </div>
                 <div class="overflow-x-auto">
@@ -51,8 +51,8 @@ export async function initStoreManagement(container) {
                                 <th class="p-3 text-center">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="users-tbody" class="divide-y divide-slate-100">
-                            <tr><td colspan="6" class="p-4 text-center text-slate-400">Loading...</td></tr>
+                        <tbody id="users-tbody" class="divide-y divide-zinc-100">
+                            <tr><td colspan="6" class="p-4 text-center text-zinc-400">Loading...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -60,8 +60,8 @@ export async function initStoreManagement(container) {
         </div>
 
         <!-- Store Modal -->
-        <div id="store-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-scale-in">
+        <div id="store-modal" class="hidden fixed inset-0 z-50 bg-zinc-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-lg w-full max-w-lg overflow-hidden animate-scale-in">
                 <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-5 text-white">
                     <h3 id="store-modal-title" class="text-lg font-bold">Add New Store</h3>
                 </div>
@@ -94,8 +94,8 @@ export async function initStoreManagement(container) {
         </div>
 
         <!-- User Modal -->
-        <div id="user-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-scale-in">
+        <div id="user-modal" class="hidden fixed inset-0 z-50 bg-zinc-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-lg w-full max-w-lg overflow-hidden animate-scale-in">
                 <div class="bg-gradient-to-r from-emerald-600 to-teal-600 p-5 text-white">
                     <h3 id="user-modal-title" class="text-lg font-bold">Create Store Admin</h3>
                 </div>
@@ -154,9 +154,9 @@ export async function initStoreManagement(container) {
         if (stores.length === 0) {
             grid.innerHTML = `
                 <div class="col-span-full p-12 text-center">
-                    <i data-lucide="building-2" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
-                    <p class="text-slate-400 font-medium">No stores yet</p>
-                    <p class="text-slate-400 text-sm">Click "New Store" to create your first store</p>
+                    <i data-lucide="building-2" class="w-12 h-12 text-zinc-300 mx-auto mb-3"></i>
+                    <p class="text-zinc-400 font-medium">No stores yet</p>
+                    <p class="text-zinc-400 text-sm">Click "New Store" to create your first store</p>
                 </div>
             `;
             if (window.lucide) window.lucide.createIcons();
@@ -166,15 +166,15 @@ export async function initStoreManagement(container) {
         grid.innerHTML = stores.map(s => {
             const adminCount = users.filter(u => u.store_id === s.id && u.role === 'store_admin').length;
             return `
-                <div class="card p-5 hover:shadow-lg transition-all group">
+                <div class="card p-5 hover:shadow-sm transition-all group">
                     <div class="flex items-start justify-between">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
                                 ${s.name.charAt(0)}
                             </div>
                             <div>
-                                <h4 class="font-bold text-slate-800 text-sm">${s.name}</h4>
-                                <p class="text-xs text-slate-500 flex items-center gap-1">
+                                <h4 class="font-bold text-zinc-900 text-sm">${s.name}</h4>
+                                <p class="text-xs text-zinc-500 flex items-center gap-1">
                                     <i data-lucide="map-pin" class="w-3 h-3"></i> ${s.location || 'Default Location'}
                                 </p>
                             </div>
@@ -183,16 +183,16 @@ export async function initStoreManagement(container) {
                             ${(s.is_active === false) ? 'Inactive' : 'Active'}
                         </span>
                     </div>
-                    ${s.address ? `<p class="text-xs text-slate-400 mt-3 truncate">${s.address}</p>` : ''}
-                    <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
-                        <span class="text-[11px] text-slate-400 flex items-center gap-1">
+                    ${s.address ? `<p class="text-xs text-zinc-400 mt-3 truncate">${s.address}</p>` : ''}
+                    <div class="flex items-center justify-between mt-4 pt-3 border-t border-zinc-100">
+                        <span class="text-[11px] text-zinc-400 flex items-center gap-1">
                             <i data-lucide="users" class="w-3 h-3"></i> ${adminCount} admin${adminCount !== 1 ? 's' : ''}
                         </span>
                         <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button class="edit-store-btn p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors" data-id="${s.id}">
+                            <button class="edit-store-btn p-1.5 rounded-lg hover:bg-zinc-100 text-zinc-400 hover:text-zinc-700 transition-colors" data-id="${s.id}">
                                 <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
                             </button>
-                            <button class="toggle-store-btn p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors" data-id="${s.id}" data-active="${s.is_active}">
+                            <button class="toggle-store-btn p-1.5 rounded-lg hover:bg-zinc-100 text-zinc-400 hover:text-zinc-700 transition-colors" data-id="${s.id}" data-active="${s.is_active}">
                                 <i data-lucide="${s.is_active ? 'eye-off' : 'eye'}" class="w-3.5 h-3.5"></i>
                             </button>
                         </div>
@@ -209,24 +209,24 @@ export async function initStoreManagement(container) {
     function renderUsers() {
         const tbody = container.querySelector('#users-tbody');
         if (users.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-slate-400">No users found</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-zinc-400">No users found</td></tr>';
             return;
         }
 
         tbody.innerHTML = users.map(u => {
             const store = stores.find(s => s.id === u.store_id);
             return `
-                <tr class="hover:bg-slate-50 transition-colors">
+                <tr class="hover:bg-zinc-50 transition-colors">
                     <td class="p-3">
-                        <span class="font-mono text-xs bg-slate-100 px-2 py-1 rounded">${u.username}</span>
+                        <span class="font-mono text-xs bg-zinc-100 px-2 py-1 rounded">${u.username}</span>
                     </td>
-                    <td class="p-3 font-medium text-slate-700">${u.display_name}</td>
+                    <td class="p-3 font-medium text-zinc-700">${u.display_name}</td>
                     <td class="p-3">
-                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${u.role === 'main_admin' ? 'bg-purple-50 text-purple-600' : 'bg-blue-50 text-blue-600'}">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${u.role === 'main_admin' ? 'bg-violet-50 text-violet-600' : 'bg-blue-50 text-blue-600'}">
                             ${u.role === 'main_admin' ? 'Main Admin' : 'Store Admin'}
                         </span>
                     </td>
-                    <td class="p-3 text-slate-600 text-sm">${store ? store.name + ' (' + store.location + ')' : '—'}</td>
+                    <td class="p-3 text-zinc-600 text-sm">${store ? store.name + ' (' + (store.location || 'Main') + ')' : '—'}</td>
                     <td class="p-3">
                         <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${u.is_active ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}">
                             ${u.is_active ? 'Active' : 'Disabled'}
@@ -235,14 +235,14 @@ export async function initStoreManagement(container) {
                     <td class="p-3 text-center">
                         ${u.role !== 'main_admin' ? `
                             <div class="flex justify-center gap-1">
-                                <button class="toggle-user-btn p-1.5 rounded hover:bg-slate-100 text-slate-400 hover:text-slate-700" data-id="${u.id}" data-active="${u.is_active}" title="${u.is_active ? 'Disable' : 'Enable'}">
+                                <button class="toggle-user-btn p-1.5 rounded hover:bg-zinc-100 text-zinc-400 hover:text-zinc-700" data-id="${u.id}" data-active="${u.is_active}" title="${u.is_active ? 'Disable' : 'Enable'}">
                                     <i data-lucide="${u.is_active ? 'user-x' : 'user-check'}" class="w-3.5 h-3.5"></i>
                                 </button>
-                                <button class="delete-user-btn p-1.5 rounded hover:bg-red-50 text-slate-400 hover:text-red-600" data-id="${u.id}" title="Delete">
+                                <button class="delete-user-btn p-1.5 rounded hover:bg-red-50 text-zinc-400 hover:text-red-600" data-id="${u.id}" title="Delete">
                                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                                 </button>
                             </div>
-                        ` : '<span class="text-slate-300 text-xs">Protected</span>'}
+                        ` : '<span class="text-zinc-300 text-xs">Protected</span>'}
                     </td>
                 </tr>
             `;

@@ -5,15 +5,15 @@ export async function initExpenditure(container, storeId = null) {
     container.innerHTML = `
         <div class="space-y-6">
             <div class="flex justify-between items-center">
-                <h2 class="text-3xl font-bold text-slate-800">Expenditure Management</h2>
+                <h2 class="text-2xl font-bold text-zinc-900">Expenditure Management</h2>
             </div>
 
             <!-- Add Expenditure Form -->
-            <div class="card p-6 bg-white shadow-lg rounded-xl relative overflow-hidden ${!storeId ? 'hidden' : ''}">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-bl-full -mr-8 -mt-8 opacity-50 pointer-events-none"></div>
+            <div class="card p-6 bg-white shadow-sm rounded-xl relative overflow-hidden ${!storeId ? 'hidden' : ''}">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-violet-50 rounded-bl-full -mr-8 -mt-8 opacity-50 pointer-events-none"></div>
 
-                <h3 class="font-bold text-lg text-slate-700 mb-4 flex items-center gap-2">
-                    <i data-lucide="plus" class="w-5 h-5 text-purple-600"></i> New Expenditure
+                <h3 class="font-bold text-lg text-zinc-700 mb-4 flex items-center gap-2">
+                    <i data-lucide="plus" class="w-5 h-5 text-violet-600"></i> New Expenditure
                 </h3>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -28,12 +28,12 @@ export async function initExpenditure(container, storeId = null) {
                             <label class="label">Type</label>
                             <div class="flex gap-4">
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="exp-type" value="Manual" checked class="text-purple-600 focus:ring-purple-500">
-                                    <span class="text-sm font-medium text-slate-700">Manual Entry</span>
+                                    <input type="radio" name="exp-type" value="Manual" checked class="text-violet-600 focus:ring-purple-500">
+                                    <span class="text-sm font-medium text-zinc-700">Manual Entry</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="exp-type" value="From Stock" class="text-purple-600 focus:ring-purple-500">
-                                    <span class="text-sm font-medium text-slate-700">From Stock</span>
+                                    <input type="radio" name="exp-type" value="From Stock" class="text-violet-600 focus:ring-purple-500">
+                                    <span class="text-sm font-medium text-zinc-700">From Stock</span>
                                 </label>
                             </div>
                         </div>
@@ -50,8 +50,8 @@ export async function initExpenditure(container, storeId = null) {
                             <label class="label">Search Product</label>
                             <div class="relative">
                                 <input type="text" id="stock-search" class="input-field pl-10" placeholder="Type to search stock...">
-                                <i data-lucide="search" class="absolute left-3 top-2.5 w-5 h-5 text-slate-400"></i>
-                                <div id="stock-results" class="hidden absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-xl max-h-48 overflow-y-auto"></div>
+                                <i data-lucide="search" class="absolute left-3 top-2.5 w-5 h-5 text-zinc-400"></i>
+                                <div id="stock-results" class="hidden absolute z-10 w-full mt-1 bg-white border border-zinc-200 rounded-lg shadow-md max-h-48 overflow-y-auto"></div>
                             </div>
                             <div id="selected-product-info" class="hidden text-sm text-emerald-600 bg-emerald-50 p-2 rounded border border-emerald-100 flex justify-between items-center">
                                 <span id="sel-prod-name" class="font-medium"></span>
@@ -65,7 +65,7 @@ export async function initExpenditure(container, storeId = null) {
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="label">Amount (₹)</label>
-                                <input type="number" id="exp-amount" class="input-field font-bold text-slate-700" placeholder="0.00">
+                                <input type="number" id="exp-amount" class="input-field font-bold text-zinc-700" placeholder="0.00">
                             </div>
                              <div>
                                 <label class="label">Category</label>
@@ -97,21 +97,21 @@ export async function initExpenditure(container, storeId = null) {
             </div>
             
             ${!storeId ? `
-            <div class="card p-6 bg-slate-50 border border-slate-200 rounded-xl text-center text-slate-500 italic mt-6">
-                <i data-lucide="building-2" class="w-8 h-8 mx-auto mb-2 text-slate-400"></i>
+            <div class="card p-6 bg-zinc-50 border border-zinc-200 rounded-xl text-center text-zinc-500 italic mt-6">
+                <i data-lucide="building-2" class="w-8 h-8 mx-auto mb-2 text-zinc-400"></i>
                 Select a specific store from the sidebar to record a new expenditure.
             </div>
             ` : ''}
 
             <!-- History List -->
-            <div class="card bg-white shadow-sm border border-slate-200">
-                <div class="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-700">Recent Expenditure</h3>
-                    <div class="text-xs text-slate-500 font-mono">Total Recorded: <span id="total-exp-count">0</span></div>
+            <div class="card bg-white shadow-sm border border-zinc-200">
+                <div class="p-4 border-b border-zinc-100 bg-zinc-50 flex justify-between items-center">
+                    <h3 class="font-bold text-zinc-700">Recent Expenditure</h3>
+                    <div class="text-xs text-zinc-500 font-mono">Total Recorded: <span id="total-exp-count">0</span></div>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-slate-600">
-                        <thead class="bg-slate-50/50 text-xs uppercase font-semibold text-slate-500 border-b border-slate-200">
+                    <table class="w-full text-left text-sm text-zinc-600">
+                        <thead class="bg-zinc-50/50 text-xs uppercase font-semibold text-zinc-500 border-b border-zinc-200">
                             <tr>
                                 <th class="p-3">Date</th>
                                 <th class="p-3">Item / Description</th>
@@ -122,7 +122,7 @@ export async function initExpenditure(container, storeId = null) {
                                 <th class="p-3 text-center">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="exp-history-body" class="divide-y divide-slate-100">
+                        <tbody id="exp-history-body" class="divide-y divide-zinc-100">
                             <tr><td colspan="7" class="p-4 text-center">Loading...</td></tr>
                         </tbody>
                     </table>
@@ -131,8 +131,8 @@ export async function initExpenditure(container, storeId = null) {
         </div>
 
         <!-- DETAIL MODAL (POP SCREEN) -->
-        <div id="detail-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
-            <div id="detail-modal-content" class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-transform duration-300">
+        <div id="detail-modal" class="hidden fixed inset-0 z-50 bg-zinc-900/50 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
+            <div id="detail-modal-content" class="bg-white rounded-xl shadow-lg w-full max-w-md overflow-hidden transform scale-95 transition-transform duration-300">
                 <!-- Modal Header -->
                 <div class="bg-gradient-to-r from-purple-600 to-indigo-600 p-5 text-white flex justify-between items-start">
                     <div>
@@ -148,40 +148,40 @@ export async function initExpenditure(container, storeId = null) {
                 <!-- Modal Body -->
                 <div class="p-6 space-y-5">
                     <!-- Amount Display -->
-                    <div class="flex justify-between items-end border-b border-slate-100 pb-4">
-                        <span class="text-slate-500 font-medium text-sm">Total Amount</span>
-                        <span id="modal-amount" class="text-2xl font-bold text-slate-800">₹0.00</span>
+                    <div class="flex justify-between items-end border-b border-zinc-100 pb-4">
+                        <span class="text-zinc-500 font-medium text-sm">Total Amount</span>
+                        <span id="modal-amount" class="text-2xl font-bold text-zinc-900">₹0.00</span>
                     </div>
 
                     <!-- Info Grid -->
                     <div class="grid grid-cols-2 gap-4 text-sm">
-                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                            <p class="text-slate-400 text-xs uppercase font-bold tracking-wider mb-1">Category</p>
-                            <p id="modal-category" class="font-semibold text-slate-700">-</p>
+                        <div class="bg-zinc-50 p-3 rounded-lg border border-zinc-100">
+                            <p class="text-zinc-400 text-xs uppercase font-bold tracking-wider mb-1">Category</p>
+                            <p id="modal-category" class="font-semibold text-zinc-700">-</p>
                         </div>
-                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                            <p class="text-slate-400 text-xs uppercase font-bold tracking-wider mb-1">Type</p>
-                            <span id="modal-type" class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-slate-200 text-slate-700">-</span>
+                        <div class="bg-zinc-50 p-3 rounded-lg border border-zinc-100">
+                            <p class="text-zinc-400 text-xs uppercase font-bold tracking-wider mb-1">Type</p>
+                            <span id="modal-type" class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-zinc-200 text-zinc-700">-</span>
                         </div>
-                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 col-span-2">
-                            <p class="text-slate-400 text-xs uppercase font-bold tracking-wider mb-1">Location</p>
-                            <p id="modal-location" class="font-semibold text-slate-700 truncate">-</p>
+                        <div class="bg-zinc-50 p-3 rounded-lg border border-zinc-100 col-span-2">
+                            <p class="text-zinc-400 text-xs uppercase font-bold tracking-wider mb-1">Location</p>
+                            <p id="modal-location" class="font-semibold text-zinc-700 truncate">-</p>
                         </div>
                     </div>
 
                     <!-- Remarks -->
                     <div>
-                        <p class="text-slate-400 text-xs uppercase font-bold tracking-wider mb-1">Remarks</p>
+                        <p class="text-zinc-400 text-xs uppercase font-bold tracking-wider mb-1">Remarks</p>
                         <div id="modal-remarks-box" class="hidden">
-                             <p id="modal-remarks" class="text-sm text-slate-600 italic bg-slate-50 p-3 rounded-lg border-l-4 border-purple-400">-</p>
+                             <p id="modal-remarks" class="text-sm text-zinc-600 italic bg-zinc-50 p-3 rounded-lg border-l-4 border-purple-400">-</p>
                         </div>
-                        <p id="modal-no-remarks" class="text-sm text-slate-400 italic italic opacity-60">No remarks provided.</p>
+                        <p id="modal-no-remarks" class="text-sm text-zinc-400 italic italic opacity-60">No remarks provided.</p>
                     </div>
                 </div>
 
                 <!-- Modal Footer -->
-                <div class="bg-slate-50 px-6 py-4 flex justify-end border-t border-slate-100">
-                    <button id="close-modal-btn" class="px-5 py-2 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
+                <div class="bg-zinc-50 px-6 py-4 flex justify-end border-t border-zinc-100">
+                    <button id="close-modal-btn" class="px-5 py-2 bg-white border border-zinc-300 hover:bg-zinc-100 text-zinc-700 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
                         <i data-lucide="x" class="w-4 h-4"></i> Close
                     </button>
                 </div>
@@ -195,19 +195,19 @@ export async function initExpenditure(container, storeId = null) {
 
     expPopupMenu = document.createElement('div');
     expPopupMenu.id = 'exp-action-menu';
-    expPopupMenu.className = 'hidden fixed z-[500] bg-white rounded-lg shadow-lg border border-slate-100 w-44 py-1';
+    expPopupMenu.className = 'hidden fixed z-[500] bg-white rounded-lg shadow-sm border border-zinc-100 w-44 py-1';
     expPopupMenu.style.transition = 'opacity 150ms ease, transform 150ms ease';
     expPopupMenu.innerHTML = `
-        <button id="exp-popup-view" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+        <button id="exp-popup-view" class="w-full text-left px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
             View Detail
         </button>
-        <div class="border-t border-slate-100 my-1"></div>
-        <button id="exp-popup-edit" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+        <div class="border-t border-zinc-100 my-1"></div>
+        <button id="exp-popup-edit" class="w-full text-left px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
             Edit
         </button>
-        <div class="border-t border-slate-100 my-1"></div>
+        <div class="border-t border-zinc-100 my-1"></div>
         <button id="exp-popup-delete" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
             Delete
@@ -294,7 +294,7 @@ export async function initExpenditure(container, storeId = null) {
         const typeSpan = container.querySelector('#modal-type');
         typeSpan.textContent = data.type;
         // Color coding for type
-        typeSpan.className = `inline-block px-2 py-0.5 rounded text-xs font-bold ${data.type === 'Stock' || data.type === 'From Stock' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-200 text-slate-700'}`;
+        typeSpan.className = `inline-block px-2 py-0.5 rounded text-xs font-bold ${data.type === 'Stock' || data.type === 'From Stock' ? 'bg-indigo-100 text-indigo-700' : 'bg-zinc-200 text-zinc-700'}`;
 
         // Remarks Logic
         if (data.remarks && data.remarks.trim() !== '') {
@@ -372,9 +372,9 @@ export async function initExpenditure(container, storeId = null) {
         const matches = products.filter(p => p.name.toLowerCase().includes(term));
         if (matches.length > 0) {
             stockResults.innerHTML = matches.map(p => `
-                <div class="p-2 hover:bg-slate-100 cursor-pointer text-sm border-b border-slate-50 last:border-0" data-id="${p.id}">
-                    <div class="font-medium text-slate-800">${p.name}</div>
-                    <div class="text-xs text-slate-500 flex justify-between">
+                <div class="p-2 hover:bg-zinc-100 cursor-pointer text-sm border-b border-zinc-50 last:border-0" data-id="${p.id}">
+                    <div class="font-medium text-zinc-900">${p.name}</div>
+                    <div class="text-xs text-zinc-500 flex justify-between">
                         <span>Qty: ${p.quantity}</span>
                         <span>Price: ₹${p.price}</span>
                     </div>
@@ -398,7 +398,7 @@ export async function initExpenditure(container, storeId = null) {
             });
 
         } else {
-            stockResults.innerHTML = '<div class="p-2 text-xs text-slate-400">No matches found</div>';
+            stockResults.innerHTML = '<div class="p-2 text-xs text-zinc-400">No matches found</div>';
             stockResults.classList.remove('hidden');
         }
     });
@@ -514,27 +514,27 @@ export async function initExpenditure(container, storeId = null) {
         container.querySelector('#total-exp-count').textContent = data.length;
 
         if (data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-400 italic">No expenditures recorded yet.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-zinc-400 italic">No expenditures recorded yet.</td></tr>`;
             return;
         }
 
         tbody.innerHTML = data.map(ex => `
-            <tr class="hover:bg-slate-50 transition-colors group">
-                <td class="p-3 text-slate-500">${new Date(ex.created_at).toLocaleDateString()}</td>
-                <td class="p-3 font-medium text-slate-700">
+            <tr class="hover:bg-zinc-50 transition-colors group">
+                <td class="p-3 text-zinc-500">${new Date(ex.created_at).toLocaleDateString()}</td>
+                <td class="p-3 font-medium text-zinc-700">
                     ${ex.item_name}
-                    ${ex.remarks ? `<div class="text-xs text-slate-400 truncate max-w-[200px]">${ex.remarks}</div>` : ''}
+                    ${ex.remarks ? `<div class="text-xs text-zinc-400 truncate max-w-[200px]">${ex.remarks}</div>` : ''}
                 </td>
                 <td class="p-3">
-                    <span class="px-2 py-1 rounded text-xs font-bold ${ex.type === 'Stock' || ex.type === 'From Stock' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600'}">
+                    <span class="px-2 py-1 rounded text-xs font-bold ${ex.type === 'Stock' || ex.type === 'From Stock' ? 'bg-indigo-100 text-indigo-700' : 'bg-zinc-100 text-zinc-600'}">
                         ${ex.type}
                     </span>
                 </td>
-                <td class="p-3 text-slate-600">${ex.location || '-'}</td>
-                <td class="p-3 text-slate-500 text-xs uppercase">${ex.category || '-'}</td>
-                <td class="p-3 text-right font-bold text-slate-800">₹${ex.amount.toFixed(2)}</td>
+                <td class="p-3 text-zinc-600">${ex.location || '-'}</td>
+                <td class="p-3 text-zinc-500 text-xs uppercase">${ex.category || '-'}</td>
+                <td class="p-3 text-right font-bold text-zinc-900">₹${ex.amount.toFixed(2)}</td>
                 <td class="p-3 text-center">
-                    <button class="menu-trigger p-1 hover:bg-slate-100 rounded-full text-slate-400 transition-colors" data-id="${ex.id}">
+                    <button class="menu-trigger p-1 hover:bg-zinc-100 rounded-full text-zinc-400 transition-colors" data-id="${ex.id}">
                         <i data-lucide="more-vertical" class="w-4 h-4"></i>
                     </button>
                 </td>

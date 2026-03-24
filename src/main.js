@@ -146,9 +146,9 @@ function navigateTo(view) {
         content.innerHTML = `
             <div class="flex items-center justify-center h-64">
                 <div class="text-center">
-                    <i data-lucide="shield-x" class="w-16 h-16 text-slate-300 mx-auto mb-4"></i>
-                    <h2 class="text-xl font-bold text-slate-400">Access Denied</h2>
-                    <p class="text-slate-400 text-sm mt-2">This section is for Main Admin only.</p>
+                    <i data-lucide="shield-x" class="w-16 h-16 text-zinc-300 mx-auto mb-4"></i>
+                    <h2 class="text-xl font-bold text-zinc-400">Access Denied</h2>
+                    <p class="text-zinc-400 text-sm mt-2">This section is for Main Admin only.</p>
                 </div>
             </div>
         `;
@@ -191,7 +191,7 @@ function navigateTo(view) {
             initStockTransfer(content);
             break;
         default:
-            content.innerHTML = '<h1 class="text-2xl font-bold text-slate-400">Page Not Found</h1>';
+            content.innerHTML = '<h1 class="text-2xl font-bold text-zinc-400">Page Not Found</h1>';
     }
 }
 

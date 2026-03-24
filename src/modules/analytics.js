@@ -7,113 +7,113 @@ export async function initAnalytics(container, navigateFn, storeId = null) {
     container.innerHTML = `
         <div class="space-y-6">
             <!-- Header & Controls -->
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                     <h2 class="text-3xl font-bold text-slate-800 tracking-tight">Dashboard</h2>
-                     <p class="text-slate-500 text-sm mt-1">Overview of your business performance</p>
+                     <h2 class="text-2xl font-bold text-zinc-900 tracking-tight">Dashboard</h2>
+                     <p class="text-zinc-500 text-sm mt-1">Overview of your business performance</p>
                 </div>
                
-                <div class="flex items-center gap-3 bg-white p-1.5 rounded-lg border border-slate-200 shadow-sm">
+                <div class="flex items-center gap-2 bg-white p-1.5 rounded-lg border border-zinc-200">
                     <div class="flex items-center gap-2 px-2 opacity-50" id="month-picker-container">
-                        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Period</span>
-                        <input type="month" id="dashboard-month-picker" class="bg-slate-50 border-none text-sm font-medium text-slate-700 focus:ring-0 cursor-pointer rounded px-2 py-1" value="${new Date().toISOString().slice(0, 7)}" disabled>
+                        <span class="text-xs font-medium text-zinc-500 uppercase tracking-wider hidden sm:inline">Period</span>
+                        <input type="month" id="dashboard-month-picker" class="bg-zinc-50 border-none text-sm font-medium text-zinc-700 focus:ring-0 cursor-pointer rounded px-2 py-1" value="${new Date().toISOString().slice(0, 7)}" disabled>
                     </div>
-                    <div class="w-px h-6 bg-slate-200"></div>
-                    <button id="all-time-btn" class="px-3 py-1.5 text-sm font-medium rounded-md bg-slate-800 text-white transition-colors border border-transparent">
+                    <div class="w-px h-6 bg-zinc-200"></div>
+                    <button id="all-time-btn" class="px-3 py-1.5 text-sm font-medium rounded-md bg-zinc-900 text-white transition-colors border border-transparent hover:bg-zinc-800">
                         All Time
                     </button>
                 </div>
             </div>
             
             <!-- Stat Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                 <!-- Total Revenue (All Time) -->
-                <div class="bg-slate-800 rounded-xl p-6 text-white shadow-lg shadow-slate-800/20 relative overflow-hidden group hover:shadow-xl transition-shadow">
-                    <div class="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-30 transition-opacity">
-                         <i data-lucide="infinity" class="w-10 h-10 text-emerald-400"></i>
+                <div class="bg-zinc-900 rounded-xl p-5 text-white relative overflow-hidden group hover:bg-zinc-800 transition-colors">
+                    <div class="absolute top-0 right-0 p-3 opacity-10">
+                         <i data-lucide="infinity" class="w-8 h-8"></i>
                     </div>
-                    <h3 class="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">Total Revenue (Lifetime)</h3>
-                    <p class="text-3xl font-bold text-emerald-400" id="all-time-revenue-card">₹0</p>
-                    <div class="mt-4 flex items-center text-xs text-slate-400 font-medium">
-                        <span class="bg-slate-700 px-2 py-1 rounded-full text-white">All Time</span>
+                    <h3 class="text-zinc-400 text-[11px] font-medium uppercase tracking-wider mb-2">Lifetime Revenue</h3>
+                    <p class="text-2xl font-bold text-white" id="all-time-revenue-card">₹0</p>
+                    <div class="mt-3 flex items-center text-[11px] text-zinc-500 font-medium">
+                        <span class="bg-zinc-800 px-2 py-0.5 rounded-full text-zinc-300">All Time</span>
                     </div>
                 </div>
 
                 <!-- Sales -->
-                <div class="bg-white rounded-xl p-6 border border-slate-100 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] relative overflow-hidden group hover:shadow-md transition-shadow">
-                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                         <i data-lucide="trending-up" class="w-10 h-10 text-blue-600"></i>
+                <div class="bg-white rounded-xl p-5 border border-zinc-200 relative overflow-hidden group hover:border-blue-200 transition-colors">
+                    <div class="absolute top-0 right-0 p-3 opacity-10">
+                         <i data-lucide="trending-up" class="w-8 h-8 text-blue-600"></i>
                     </div>
-                    <h3 class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-2" id="label-sales">Sales (All Time)</h3>
-                    <p class="text-3xl font-bold text-slate-800" id="month-sales-card">₹0</p>
-                    <div class="mt-4 flex items-center text-xs text-blue-600 font-medium">
-                        <span class="bg-blue-50 px-2 py-1 rounded-full">Revenue</span>
+                    <h3 class="text-zinc-500 text-[11px] font-medium uppercase tracking-wider mb-2" id="label-sales">Sales (All Time)</h3>
+                    <p class="text-2xl font-bold text-zinc-900" id="month-sales-card">₹0</p>
+                    <div class="mt-3 flex items-center text-[11px] text-blue-600 font-medium">
+                        <span class="bg-blue-50 px-2 py-0.5 rounded-full">Revenue</span>
                     </div>
                 </div>
                 
                 <!-- Expenditure -->
-                <div class="bg-white rounded-xl p-6 border border-slate-100 shadow-[0_2px_10px_-3px_rgba(244,63,94,0.1)] relative overflow-hidden group hover:shadow-md transition-shadow">
-                     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                         <i data-lucide="wallet" class="w-10 h-10 text-rose-600"></i>
+                <div class="bg-white rounded-xl p-5 border border-zinc-200 relative overflow-hidden group hover:border-red-200 transition-colors">
+                     <div class="absolute top-0 right-0 p-3 opacity-10">
+                         <i data-lucide="wallet" class="w-8 h-8 text-red-600"></i>
                     </div>
-                     <h3 class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-2" id="label-exp">Expenditure (All Time)</h3>
-                     <p class="text-3xl font-bold text-slate-800" id="month-expenditure-card">₹0</p>
-                     <div class="mt-4 flex items-center text-xs text-rose-600 font-medium">
-                        <span class="bg-rose-50 px-2 py-1 rounded-full">Expenses</span>
+                     <h3 class="text-zinc-500 text-[11px] font-medium uppercase tracking-wider mb-2" id="label-exp">Expenditure (All Time)</h3>
+                     <p class="text-2xl font-bold text-zinc-900" id="month-expenditure-card">₹0</p>
+                     <div class="mt-3 flex items-center text-[11px] text-red-600 font-medium">
+                        <span class="bg-red-50 px-2 py-0.5 rounded-full">Expenses</span>
                     </div>
                 </div>
 
                 <!-- Net Profit -->
-                <div class="bg-white rounded-xl p-6 border border-slate-100 shadow-[0_2px_10px_-3px_rgba(16,185,129,0.1)] relative overflow-hidden group hover:shadow-md transition-shadow">
-                     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                         <i data-lucide="piggy-bank" class="w-10 h-10 text-emerald-600"></i>
+                <div class="bg-white rounded-xl p-5 border border-zinc-200 relative overflow-hidden group hover:border-emerald-200 transition-colors">
+                     <div class="absolute top-0 right-0 p-3 opacity-10">
+                         <i data-lucide="piggy-bank" class="w-8 h-8 text-emerald-600"></i>
                     </div>
-                     <h3 class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-2" id="label-profit">Net Profit (All Time)</h3>
-                     <p class="text-3xl font-bold text-slate-800" id="net-profit-card">₹0</p>
+                     <h3 class="text-zinc-500 text-[11px] font-medium uppercase tracking-wider mb-2" id="label-profit">Net Profit (All Time)</h3>
+                     <p class="text-2xl font-bold text-zinc-900" id="net-profit-card">₹0</p>
                      
-                     <div class="mt-4 flex flex-col gap-2">
-                        <div class="text-xs text-slate-500 font-medium bg-slate-50 p-2 rounded flex justify-between">
-                            <span>COGS:</span> <span id="cogs-display" class="text-rose-600">₹0</span>
+                     <div class="mt-3 flex flex-col gap-1.5">
+                        <div class="text-[11px] text-zinc-500 font-medium bg-zinc-50 p-1.5 rounded flex justify-between">
+                            <span>COGS:</span> <span id="cogs-display" class="text-red-600">₹0</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="bg-emerald-50 text-emerald-600 text-xs font-medium px-2 py-1 rounded-full">Sales - COGS - Exp</span>
-                            <button id="download-financial-report" class="text-slate-400 hover:text-blue-600 transition-colors p-1 hover:bg-slate-100 rounded" title="Download Full Financial Report">
-                                <i data-lucide="download" class="w-4 h-4"></i>
+                            <span class="bg-emerald-50 text-emerald-700 text-[10px] font-medium px-2 py-0.5 rounded-full">Sales - COGS - Exp</span>
+                            <button id="download-financial-report" class="text-zinc-400 hover:text-blue-600 transition-colors p-1 hover:bg-zinc-100 rounded" title="Download Report">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i>
                             </button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Total COGS -->
-                <div class="bg-white rounded-xl p-6 border border-slate-100 shadow-[0_2px_10px_-3px_rgba(244,63,94,0.1)] relative overflow-hidden group hover:shadow-md transition-shadow">
-                     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                         <i data-lucide="tag" class="w-10 h-10 text-orange-600"></i>
+                <div class="bg-white rounded-xl p-5 border border-zinc-200 relative overflow-hidden group hover:border-orange-200 transition-colors">
+                     <div class="absolute top-0 right-0 p-3 opacity-10">
+                         <i data-lucide="tag" class="w-8 h-8 text-orange-600"></i>
                     </div>
-                     <h3 class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-2">Total COGS</h3>
-                     <p class="text-3xl font-bold text-slate-800" id="total-cogs-card">₹0</p>
-                     <div class="mt-4 flex items-center text-xs text-orange-600 font-medium">
-                        <span class="bg-orange-50 px-2 py-1 rounded-full">Cost of Goods</span>
+                     <h3 class="text-zinc-500 text-[11px] font-medium uppercase tracking-wider mb-2">Total COGS</h3>
+                     <p class="text-2xl font-bold text-zinc-900" id="total-cogs-card">₹0</p>
+                     <div class="mt-3 flex items-center text-[11px] text-orange-600 font-medium">
+                        <span class="bg-orange-50 px-2 py-0.5 rounded-full">Cost of Goods</span>
                     </div>
                 </div>
 
                  <!-- Active Repairs -->
-                 <div class="bg-white rounded-xl p-6 border border-slate-100 shadow-[0_2px_10px_-3px_rgba(139,92,246,0.1)] relative overflow-hidden group hover:shadow-md transition-shadow">
-                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                         <i data-lucide="wrench" class="w-10 h-10 text-purple-600"></i>
+                 <div class="bg-white rounded-xl p-5 border border-zinc-200 relative overflow-hidden group hover:border-violet-200 transition-colors">
+                    <div class="absolute top-0 right-0 p-3 opacity-10">
+                         <i data-lucide="wrench" class="w-8 h-8 text-violet-600"></i>
                     </div>
-                    <h3 class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-2">Active Repairs</h3>
-                    <p class="text-3xl font-bold text-slate-800" id="active-repairs">0</p>
-                    <div class="mt-4 flex items-center text-xs text-purple-600 font-medium">
-                        <span class="bg-purple-50 px-2 py-1 rounded-full">In Progress</span>
+                    <h3 class="text-zinc-500 text-[11px] font-medium uppercase tracking-wider mb-2">Active Repairs</h3>
+                    <p class="text-2xl font-bold text-zinc-900" id="active-repairs">0</p>
+                    <div class="mt-3 flex items-center text-[11px] text-violet-600 font-medium">
+                        <span class="bg-violet-50 px-2 py-0.5 rounded-full">In Progress</span>
                     </div>
                 </div>
             </div>
 
             <!-- Chart Section -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-2 bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
-                    <h3 class="font-bold text-slate-700 mb-6 flex items-center gap-2 text-sm">
-                        <i data-lucide="bar-chart-3" class="w-4 h-4 text-slate-400"></i>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div class="lg:col-span-2 bg-white p-5 rounded-xl border border-zinc-200">
+                    <h3 class="font-semibold text-zinc-800 mb-4 flex items-center gap-2 text-sm">
+                        <i data-lucide="bar-chart-3" class="w-4 h-4 text-zinc-400"></i>
                         Sales Trend
                     </h3>
                     <div class="h-64">
@@ -121,9 +121,9 @@ export async function initAnalytics(container, navigateFn, storeId = null) {
                     </div>
                 </div>
                 
-                 <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
-                    <h3 class="font-bold text-slate-700 mb-6 flex items-center gap-2 text-sm">
-                        <i data-lucide="pie-chart" class="w-4 h-4 text-slate-400"></i>
+                 <div class="bg-white p-5 rounded-xl border border-zinc-200">
+                    <h3 class="font-semibold text-zinc-800 mb-4 flex items-center gap-2 text-sm">
+                        <i data-lucide="pie-chart" class="w-4 h-4 text-zinc-400"></i>
                         Repair Status
                     </h3>
                     <div class="h-64 flex justify-center items-center">
@@ -132,71 +132,71 @@ export async function initAnalytics(container, navigateFn, storeId = null) {
                 </div>
             </div>
             
-            <!-- Recent Activity Section (Grid) -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Recent Activity Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 
                 <!-- Recent Transactions -->
-                <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col h-full">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bold text-slate-700 flex items-center gap-2 text-sm">
-                            <i data-lucide="shopping-cart" class="w-4 h-4 text-emerald-500"></i>
+                <div class="bg-white p-5 rounded-xl border border-zinc-200 flex flex-col h-full">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-semibold text-zinc-800 flex items-center gap-2 text-sm">
+                            <i data-lucide="shopping-cart" class="w-4 h-4 text-blue-500"></i>
                             Recent Sales
                         </h3>
                         <button id="view-all-txns" class="text-xs font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-2 py-1 rounded transition-colors">View All</button>
                     </div>
                     <div class="flex-1 overflow-auto max-h-[300px]">
                         <table class="w-full text-left border-collapse">
-                             <thead class="sticky top-0 bg-white shadow-sm z-10">
-                                <tr class="text-xs text-slate-400 border-b border-slate-100">
-                                    <th class="pb-2 font-normal pl-2">Details</th>
-                                    <th class="pb-2 font-normal text-right pr-2">Amount</th>
+                             <thead class="sticky top-0 bg-white z-10">
+                                <tr class="text-[11px] text-zinc-400 border-b border-zinc-100">
+                                    <th class="pb-2 font-medium pl-2">Details</th>
+                                    <th class="pb-2 font-medium text-right pr-2">Amount</th>
                                 </tr>
                             </thead>
-                            <tbody id="recent-txns" class="text-sm text-slate-600 divide-y divide-slate-50"></tbody>
+                            <tbody id="recent-txns" class="text-sm text-zinc-600 divide-y divide-zinc-50"></tbody>
                         </table>
                     </div>
                 </div>
 
                 <!-- Recent Expenditure -->
-                <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col h-full">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bold text-slate-700 flex items-center gap-2 text-sm">
-                            <i data-lucide="credit-card" class="w-4 h-4 text-rose-500"></i>
+                <div class="bg-white p-5 rounded-xl border border-zinc-200 flex flex-col h-full">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-semibold text-zinc-800 flex items-center gap-2 text-sm">
+                            <i data-lucide="credit-card" class="w-4 h-4 text-red-500"></i>
                             Recent Expenses
                         </h3>
                          <button id="view-all-exp" class="text-xs font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-2 py-1 rounded transition-colors">View All</button>
                     </div>
                     <div class="flex-1 overflow-auto max-h-[300px]">
                          <table class="w-full text-left border-collapse">
-                             <thead class="sticky top-0 bg-white shadow-sm z-10">
-                                <tr class="text-xs text-slate-400 border-b border-slate-100">
-                                    <th class="pb-2 font-normal pl-2">Description</th>
-                                    <th class="pb-2 font-normal text-right pr-2">Amount</th>
+                             <thead class="sticky top-0 bg-white z-10">
+                                <tr class="text-[11px] text-zinc-400 border-b border-zinc-100">
+                                    <th class="pb-2 font-medium pl-2">Description</th>
+                                    <th class="pb-2 font-medium text-right pr-2">Amount</th>
                                 </tr>
                             </thead>
-                            <tbody id="recent-exp" class="text-sm text-slate-600 divide-y divide-slate-50"></tbody>
+                            <tbody id="recent-exp" class="text-sm text-zinc-600 divide-y divide-zinc-50"></tbody>
                         </table>
                     </div>
                 </div>
 
                 <!-- Recent Queries -->
-                <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex flex-col h-full">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bold text-slate-700 flex items-center gap-2 text-sm">
-                            <i data-lucide="message-square" class="w-4 h-4 text-purple-500"></i>
+                <div class="bg-white p-5 rounded-xl border border-zinc-200 flex flex-col h-full">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-semibold text-zinc-800 flex items-center gap-2 text-sm">
+                            <i data-lucide="message-square" class="w-4 h-4 text-violet-500"></i>
                             Recent Queries
                         </h3>
                          <button id="view-all-queries" class="text-xs font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-2 py-1 rounded transition-colors">View All</button>
                     </div>
                     <div class="flex-1 overflow-auto max-h-[300px]">
                          <table class="w-full text-left border-collapse">
-                            <thead class="sticky top-0 bg-white shadow-sm z-10">
-                                <tr class="text-xs text-slate-400 border-b border-slate-100">
-                                    <th class="pb-2 font-normal pl-2">Customer / Req</th>
-                                    <th class="pb-2 font-normal text-right pr-2">Status</th>
+                            <thead class="sticky top-0 bg-white z-10">
+                                <tr class="text-[11px] text-zinc-400 border-b border-zinc-100">
+                                    <th class="pb-2 font-medium pl-2">Customer / Req</th>
+                                    <th class="pb-2 font-medium text-right pr-2">Status</th>
                                 </tr>
                             </thead>
-                            <tbody id="recent-queries" class="text-sm text-slate-600 divide-y divide-slate-50"></tbody>
+                            <tbody id="recent-queries" class="text-sm text-zinc-600 divide-y divide-zinc-50"></tbody>
                         </table>
                     </div>
                 </div>
@@ -246,8 +246,8 @@ export async function initAnalytics(container, navigateFn, storeId = null) {
 
         if (isAllTime) {
             // Update UI State for All Time
-            allTimeBtn.classList.add('bg-slate-800', 'text-white');
-            allTimeBtn.classList.remove('text-slate-600', 'hover:bg-slate-100');
+            allTimeBtn.classList.add('bg-zinc-900', 'text-white');
+            allTimeBtn.classList.remove('text-zinc-600', 'hover:bg-zinc-100');
             monthPicker.disabled = true;
             monthPickerContainer.classList.add('opacity-50');
 
@@ -256,8 +256,8 @@ export async function initAnalytics(container, navigateFn, storeId = null) {
             lblProfit.textContent = 'Net Profit (All Time)';
         } else {
             // Update UI State for Monthly
-            allTimeBtn.classList.remove('bg-slate-800', 'text-white');
-            allTimeBtn.classList.add('text-slate-600', 'hover:bg-slate-100');
+            allTimeBtn.classList.remove('bg-zinc-900', 'text-white');
+            allTimeBtn.classList.add('text-zinc-600', 'hover:bg-zinc-100');
             monthPicker.disabled = false;
             monthPickerContainer.classList.remove('opacity-50');
 
@@ -340,11 +340,11 @@ export async function initAnalytics(container, navigateFn, storeId = null) {
 
 
         if (netProfit < 0) {
-            profitCard.classList.remove('text-slate-800');
-            profitCard.classList.add('text-rose-500');
+            profitCard.classList.remove('text-zinc-900');
+            profitCard.classList.add('text-red-500');
         } else {
-            profitCard.classList.add('text-slate-800');
-            profitCard.classList.remove('text-rose-500');
+            profitCard.classList.add('text-zinc-900');
+            profitCard.classList.remove('text-red-500');
         }
 
         profitCard.parentElement.setAttribute('title',
@@ -486,16 +486,16 @@ export async function initAnalytics(container, navigateFn, storeId = null) {
 
         const txnBody = container.querySelector('#recent-txns');
         txnBody.innerHTML = recentBills?.map(b => `
-            <tr class="hover:bg-slate-50 transition-colors">
+            <tr class="hover:bg-zinc-50 transition-colors">
                 <td class="py-3 pl-2">
-                    <div class="font-medium text-slate-700">${b.customer_name || 'Walk-in'}</div>
-                     <div class="text-[10px] text-slate-400 font-mono">#${b.invoice_number || b.id.slice(0, 6)} • ${new Date(b.created_at).toLocaleDateString()}</div>
+                    <div class="font-medium text-zinc-700">${b.customer_name || 'Walk-in'}</div>
+                     <div class="text-[10px] text-zinc-400 font-mono">#${b.invoice_number || b.id.slice(0, 6)} • ${new Date(b.created_at).toLocaleDateString()}</div>
                 </td>
                 <td class="py-3 pr-2 text-right">
-                    <span class="font-semibold text-slate-700">₹${b.total_amount}</span>
+                    <span class="font-semibold text-zinc-700">₹${b.total_amount}</span>
                 </td>
             </tr>
-        `).join('') || '<tr><td colspan="2" class="p-4 text-center text-slate-400 text-xs">No recent transactions</td></tr>';
+        `).join('') || '<tr><td colspan="2" class="p-4 text-center text-zinc-400 text-xs">No recent transactions</td></tr>';
 
         // Recent Expenditure
         let recentExpQuery = supabase
@@ -508,16 +508,16 @@ export async function initAnalytics(container, navigateFn, storeId = null) {
 
         const expBody = container.querySelector('#recent-exp');
         expBody.innerHTML = recentExp?.map(e => `
-            <tr class="hover:bg-slate-50 transition-colors">
+            <tr class="hover:bg-zinc-50 transition-colors">
                 <td class="py-3 pl-2">
-                    <div class="font-medium text-slate-700">${e.item_name}</div>
-                    <div class="text-[10px] text-slate-400">${e.category || 'General'} • ${new Date(e.created_at).toLocaleDateString()}</div>
+                    <div class="font-medium text-zinc-700">${e.item_name}</div>
+                    <div class="text-[10px] text-zinc-400">${e.category || 'General'} • ${new Date(e.created_at).toLocaleDateString()}</div>
                 </td>
                 <td class="py-3 pr-2 text-right">
-                     <span class="font-semibold text-rose-600">-₹${e.amount}</span>
+                     <span class="font-semibold text-red-600">-₹${e.amount}</span>
                 </td>
             </tr>
-        `).join('') || '<tr><td colspan="2" class="p-4 text-center text-slate-400 text-xs">No recent expenditures</td></tr>';
+        `).join('') || '<tr><td colspan="2" class="p-4 text-center text-zinc-400 text-xs">No recent expenditures</td></tr>';
 
         // Recent Queries
         let recentQueriesQuery = supabase
@@ -530,10 +530,10 @@ export async function initAnalytics(container, navigateFn, storeId = null) {
 
         const queryBody = container.querySelector('#recent-queries');
         queryBody.innerHTML = recentQueries?.map(q => `
-            <tr class="hover:bg-slate-50 transition-colors">
+            <tr class="hover:bg-zinc-50 transition-colors">
                  <td class="py-3 pl-2">
-                    <div class="font-medium text-slate-700 truncate max-w-[120px]" title="${q.customer_name}">${q.customer_name}</div>
-                    <div class="text-[10px] text-slate-400 truncate max-w-[120px]" title="${q.requirement}">${q.requirement}</div>
+                    <div class="font-medium text-zinc-700 truncate max-w-[120px]" title="${q.customer_name}">${q.customer_name}</div>
+                    <div class="text-[10px] text-zinc-400 truncate max-w-[120px]" title="${q.requirement}">${q.requirement}</div>
                 </td>
                 <td class="py-3 pr-2 text-right">
                     <span class="text-[10px] font-medium px-2 py-0.5 rounded-full ${getStatusColor(q.status)}">
@@ -541,7 +541,7 @@ export async function initAnalytics(container, navigateFn, storeId = null) {
                     </span>
                 </td>
             </tr>
-        `).join('') || '<tr><td colspan="2" class="p-4 text-center text-slate-400 text-xs">No recent queries</td></tr>';
+        `).join('') || '<tr><td colspan="2" class="p-4 text-center text-zinc-400 text-xs">No recent queries</td></tr>';
     }
 
     function getStatusColor(status) {
@@ -549,7 +549,7 @@ export async function initAnalytics(container, navigateFn, storeId = null) {
             case 'pending': return 'bg-yellow-50 text-yellow-600 border border-yellow-100';
             case 'resolved': return 'bg-emerald-50 text-emerald-600 border border-emerald-100';
             case 'in progress': return 'bg-blue-50 text-blue-600 border border-blue-100';
-            default: return 'bg-slate-50 text-slate-600 border border-slate-100';
+            default: return 'bg-zinc-50 text-zinc-600 border border-zinc-100';
         }
     }
 

@@ -2,12 +2,18 @@ import { supabase } from '../supabase.js';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { MoreVertical, Eye, Trash2, X, Download } from 'lucide';
+import { isMainAdmin } from './auth.js';
+
+// ── Company config ── Update these values to match actual registration details
+const COMPANY_CONFIG = {
+    gstin: 'GSTIN: 09ABCDE1234F1Z5', // TODO: Replace with actual registered GSTIN
+};
 
 export async function initInvoiceHistory(container, storeId = null) {
     container.innerHTML = `
         <div class="space-y-6">
             <div class="flex justify-between items-center">
-                <h2 class="text-3xl font-bold text-slate-800">Invoice History</h2>
+                <h2 class="text-2xl font-bold text-zinc-900">Invoice History</h2>
                 <button id="download-all-report" class="btn-secondary text-sm">
                     <i data-lucide="download" class="w-4 h-4 mr-2"></i> Export CSV
                 </button>
@@ -15,8 +21,8 @@ export async function initInvoiceHistory(container, storeId = null) {
 
             <div class="card overflow-hidden relative">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-slate-600">
-                        <thead class="bg-slate-50 text-xs uppercase font-semibold text-slate-500 border-b border-slate-200">
+                    <table class="w-full text-left text-sm text-zinc-600">
+                        <thead class="bg-zinc-50 text-xs uppercase font-semibold text-zinc-500 border-b border-zinc-200">
                             <tr>
                                 <th class="p-4">Invoice No</th>
                                 <th class="p-4">Date</th>
@@ -27,7 +33,7 @@ export async function initInvoiceHistory(container, storeId = null) {
                                 <th class="p-4 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="invoice-list-body" class="divide-y divide-slate-100">
+                        <tbody id="invoice-list-body" class="divide-y divide-zinc-100">
                             <tr><td colspan="6" class="p-8 text-center">Loading invoices...</td></tr>
                         </tbody>
                     </table>
@@ -37,22 +43,22 @@ export async function initInvoiceHistory(container, storeId = null) {
         
 
         <!-- Modal for Invoice Details -->
-        <div id="detail-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-                <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                    <h3 class="text-lg font-bold text-slate-800">Invoice Details</h3>
-                    <button id="close-modal-btn" class="text-slate-400 hover:text-red-500 transition-colors">
+        <div id="detail-modal" class="fixed inset-0 z-50 hidden bg-zinc-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-md w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+                <div class="px-6 py-4 border-b border-zinc-100 flex justify-between items-center bg-zinc-50">
+                    <h3 class="text-lg font-bold text-zinc-900">Invoice Details</h3>
+                    <button id="close-modal-btn" class="text-zinc-400 hover:text-red-500 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                     </button>
                 </div>
-                <div id="modal-content" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+                <div id="modal-content" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto overscroll-contain">
                     <!-- Content injected via JS -->
                 </div>
-                <div class="px-6 py-4 bg-slate-50 text-right flex justify-end gap-3">
+                <div class="px-6 py-4 bg-zinc-50 text-right flex justify-end gap-3">
                      <button id="modal-download-btn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium transition-colors text-sm flex items-center gap-2">
                         <i data-lucide="download" class="w-4 h-4"></i> Download PDF
                     </button>
-                    <button id="close-modal-action" class="px-4 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded font-medium transition-colors text-sm">Close</button>
+                    <button id="close-modal-action" class="px-4 py-2 bg-white border border-zinc-300 hover:bg-zinc-50 text-zinc-700 rounded font-medium transition-colors text-sm">Close</button>
                 </div>
             </div>
         </div>
@@ -69,18 +75,22 @@ export async function initInvoiceHistory(container, storeId = null) {
 
     popupMenu = document.createElement('div');
     popupMenu.id = 'invoice-action-menu';
-    popupMenu.className = 'hidden fixed z-[500] bg-white rounded-lg shadow-lg border border-slate-100 w-44 py-1';
+    popupMenu.className = 'hidden fixed z-[500] bg-white rounded-lg shadow-sm border border-zinc-100 w-44 py-1';
     popupMenu.style.transition = 'opacity 150ms ease, transform 150ms ease';
     popupMenu.innerHTML = `
-        <button id="invoice-popup-view" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+        <button id="invoice-popup-view" class="w-full text-left px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
             View Detail
+        </button>
+        <button id="invoice-popup-edit" class="w-full text-left px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+            Edit Invoice
         </button>
         <button id="invoice-popup-download" class="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             Download PDF
         </button>
-        <div class="border-t border-slate-100 my-1"></div>
+        <div class="border-t border-zinc-100 my-1"></div>
         <button id="invoice-popup-delete" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
             Delete
@@ -119,11 +129,17 @@ export async function initInvoiceHistory(container, storeId = null) {
 
         // Re-attach button listeners
         const viewBtn = popupMenu.querySelector('#invoice-popup-view');
+        const editBtn = popupMenu.querySelector('#invoice-popup-edit');
         const downloadBtn = popupMenu.querySelector('#invoice-popup-download');
         const deleteBtn = popupMenu.querySelector('#invoice-popup-delete');
 
         viewBtn.onclick = () => {
-            openInvoiceModal(currentActiveBill);
+            openInvoiceModal(currentActiveBill, false);
+            hidePopup();
+        };
+
+        editBtn.onclick = () => {
+            openInvoiceModal(currentActiveBill, true);
             hidePopup();
         };
 
@@ -141,12 +157,11 @@ export async function initInvoiceHistory(container, storeId = null) {
         deleteBtn.onclick = async () => {
             const idToDelete = currentActiveBill.id;
             hidePopup();
-            const adminPass = prompt("Enter Developer Password to DELETE:");
-            if (adminPass !== "Jayasan@9045") {
-                alert("Incorrect Password!");
+            if (!isMainAdmin()) {
+                alert("Only the Main Administrator can delete invoices.");
                 return;
             }
-            if (confirm('Are you sure you want to DELETE this invoice?')) {
+            if (confirm('Are you sure you want to permanently DELETE this invoice? This cannot be undone.')) {
                 const { error } = await supabase.from('bills').delete().eq('id', idToDelete);
                 if (error) alert(error.message);
                 else fetchBills();
@@ -170,59 +185,65 @@ export async function initInvoiceHistory(container, storeId = null) {
     };
     document.addEventListener('click', handleGlobalClick);
 
+    // Register cleanup so main.js can remove listeners when navigating away
+    window.cleanupCurrentModule = () => {
+        document.removeEventListener('click', handleGlobalClick);
+        popupMenu?.remove();
+    };
+
     // --- Modal Logic ---
     const modal = container.querySelector('#detail-modal');
     const modalContent = container.querySelector('#modal-content');
     const closeModalBtns = [container.querySelector('#close-modal-btn'), container.querySelector('#close-modal-action')];
     const modalDownloadBtn = container.querySelector('#modal-download-btn');
 
-    async function openInvoiceModal(bill) {
+    async function openInvoiceModal(bill, editMode = false) {
         hidePopup();
         const { data: items } = await supabase.from('bill_items').select('*').eq('bill_id', bill.id);
 
         const itemsHtml = (items && items.length > 0)
             ? items.map((item, index) => `
-                <div class="flex justify-between items-center py-2 border-b border-slate-100 last:border-0 text-sm">
+                <div class="flex justify-between items-center py-2 border-b border-zinc-100 last:border-0 text-sm">
                     <div class="flex-1">
-                        <div class="font-medium text-slate-700">${item.product_name}</div>
-                        <div class="text-xs text-slate-400">Serial: ${item.serial_number || '-'}</div>
+                        <div class="font-medium text-zinc-700">${item.product_name}</div>
+                        <div class="text-xs text-zinc-400">Serial: ${item.serial_number || '-'}</div>
                     </div>
-                    <div class="text-slate-600 w-16 text-center">x${item.quantity}</div>
-                    <div class="font-medium text-slate-800 w-24 text-right">₹${(item.price_at_sale * item.quantity).toFixed(2)}</div>
+                    <div class="text-zinc-600 w-16 text-center">x${item.quantity}</div>
+                    <div class="font-medium text-zinc-900 w-24 text-right">₹${(item.price_at_sale * item.quantity).toFixed(2)}</div>
                 </div>
             `).join('')
-            : '<div class="text-sm text-slate-400 italic">No items found for this invoice.</div>';
+            : '<div class="text-sm text-zinc-400 italic">No items found for this invoice.</div>';
 
         modalContent.innerHTML = `
             <div class="grid grid-cols-2 gap-6 mb-6">
                 <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase">Invoice No</label>
-                    <div class="text-lg font-bold text-slate-800 font-mono">${bill.invoice_number || '#' + bill.id.slice(0, 8).toUpperCase()}</div>
+                    <label class="text-xs font-bold text-zinc-400 uppercase">Invoice No</label>
+                    <div class="text-lg font-bold text-zinc-900 font-mono">${bill.invoice_number || '#' + bill.id.slice(0, 8).toUpperCase()}</div>
                 </div>
                 <div class="text-right">
-                    <label class="text-xs font-bold text-slate-400 uppercase">Date</label>
-                    <div class="text-slate-800">${new Date(bill.created_at).toLocaleDateString()}</div>
+                    <label class="text-xs font-bold text-zinc-400 uppercase">Date</label>
+                    <div class="text-zinc-900">${new Date(bill.created_at).toLocaleDateString()}</div>
                 </div>
                 
-                <div class="col-span-2 border-b border-slate-100 pb-4 mb-2">
-                    <label class="text-xs font-bold text-slate-400 uppercase">Bill To</label>
-                    <div class="text-lg font-medium text-slate-800">${bill.customer_name || 'Walk-in'}</div>
-                    <div class="text-slate-500 text-sm">${bill.customer_phone || ''}</div>
+                <div class="col-span-2 border-b border-zinc-100 pb-4 mb-2">
+                    <label class="text-xs font-bold text-zinc-400 uppercase">Bill To</label>
+                    <div class="text-lg font-medium text-zinc-900">${bill.customer_name || 'Walk-in'}</div>
+                    <div class="text-zinc-500 text-sm">${bill.customer_phone || ''}</div>
                 </div>
 
                 <div class="col-span-2 flex justify-between items-center mb-4">
                     <div>
-                        <label class="text-xs font-bold text-slate-400 uppercase">Status</label>
+                        <label class="text-xs font-bold text-zinc-400 uppercase">Status</label>
                         <div class="mt-1 flex items-center gap-2">
-                             <select id="modal-status-select" class="text-xs font-bold rounded-lg border-slate-200 bg-slate-50 py-1 pl-2 pr-8 focus:ring-0">
+                             <select id="modal-status-select" class="text-xs font-bold rounded-lg border-zinc-200 bg-zinc-50 py-1 pl-2 pr-8 focus:ring-0">
                                 <option value="Paid" ${bill.payment_status === 'Paid' ? 'selected' : ''}>Paid</option>
                                 <option value="Pending" ${bill.payment_status === 'Pending' ? 'selected' : ''}>Pending</option>
                             </select>
                         </div>
                     </div>
                     <div class="text-right">
-                        <label class="text-xs font-bold text-slate-400 uppercase">Total Amount</label>
-                        <div class="text-2xl font-bold text-slate-900">₹${bill.total_amount.toFixed(2)}</div>
+                        <label class="text-xs font-bold text-zinc-400 uppercase">Total Amount</label>
+                        <div class="text-2xl font-bold text-zinc-900">₹${bill.total_amount.toFixed(2)}</div>
                     </div>
                 </div>
 
@@ -232,11 +253,11 @@ export async function initInvoiceHistory(container, storeId = null) {
                     <div class="flex items-center gap-4 mb-3">
                         <label class="inline-flex items-center cursor-pointer">
                             <input type="radio" name="modal-payment-method" value="Cash" class="form-radio text-emerald-600" ${!bill.payment_method || bill.payment_method === 'Cash' ? 'checked' : ''}>
-                            <span class="ml-2 text-sm text-slate-700">Cash</span>
+                            <span class="ml-2 text-sm text-zinc-700">Cash</span>
                         </label>
                         <label class="inline-flex items-center cursor-pointer">
                             <input type="radio" name="modal-payment-method" value="Online" class="form-radio text-emerald-600" ${bill.payment_method === 'Online' ? 'checked' : ''}>
-                            <span class="ml-2 text-sm text-slate-700">Online</span>
+                            <span class="ml-2 text-sm text-zinc-700">Online</span>
                         </label>
                     </div>
                     <!-- Cash Fields -->
@@ -263,19 +284,31 @@ export async function initInvoiceHistory(container, storeId = null) {
                 </div>
             </div>
 
-            <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Invoice Items</label>
-            <div class="border rounded-lg border-slate-200 bg-slate-50 p-4">
+            <label class="text-xs font-bold text-zinc-400 uppercase mb-2 block">Invoice Items</label>
+            <div class="border rounded-lg border-zinc-200 bg-zinc-50 p-4">
                 ${itemsHtml}
             </div>
             
             ${bill.gst_applied ? `
-                <div class="mt-4 text-right text-sm text-slate-500">
+                <div class="mt-4 text-right text-sm text-zinc-500">
                     Includes GST (18%)
                 </div>
             ` : ''}
         `;
 
         modal.classList.remove('hidden');
+        // In edit-mode, scroll the modal content to the payment/status section
+        if (editMode) {
+            setTimeout(() => {
+                const paymentSection = container.querySelector('#modal-payment-section');
+                const statusSelect = container.querySelector('#modal-status-select');
+                if (paymentSection && !paymentSection.classList.contains('hidden')) {
+                    paymentSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else if (statusSelect) {
+                    statusSelect.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        }
 
         // Modal Download Handler
         modalDownloadBtn.onclick = async () => {
@@ -406,7 +439,7 @@ export async function initInvoiceHistory(container, storeId = null) {
     // --- Render Table ---
     function renderTable() {
         if (bills.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-400">No invoices found</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-zinc-400">No invoices found</td></tr>`;
             return;
         }
 
@@ -417,23 +450,23 @@ export async function initInvoiceHistory(container, storeId = null) {
                 if (b.payment_method === 'Cash') {
                     paymentDetails = `<span class="text-emerald-600 font-medium">Cash</span>`;
                     if (b.cash_receiver) {
-                        paymentDetails += `<div class="text-xs text-slate-400">By: ${b.cash_receiver}</div>`;
+                        paymentDetails += `<div class="text-xs text-zinc-400">By: ${b.cash_receiver}</div>`;
                     }
                 } else if (b.payment_method === 'Online') {
                     paymentDetails = `<span class="text-blue-600 font-medium">${b.online_platform || 'Online'}</span>`;
                     if (b.transaction_id) {
-                        paymentDetails += `<div class="text-xs text-slate-400">${b.transaction_id}</div>`;
+                        paymentDetails += `<div class="text-xs text-zinc-400">${b.transaction_id}</div>`;
                     }
                 }
             }
 
             return `
-            <tr class="hover:bg-slate-50 transition-colors">
-                <td class="p-4 font-mono text-xs text-slate-500 font-bold">${b.invoice_number || '#' + b.id.slice(0, 8).toUpperCase()}</td>
+            <tr class="hover:bg-zinc-50 transition-colors">
+                <td class="p-4 font-mono text-xs text-zinc-500 font-bold">${b.invoice_number || '#' + b.id.slice(0, 8).toUpperCase()}</td>
                 <td class="p-4">${new Date(b.created_at).toLocaleDateString()}</td>
-                <td class="p-4 font-medium text-slate-800">
+                <td class="p-4 font-medium text-zinc-900">
                     ${b.customer_name || 'Walk-in'}
-                    <div class="text-xs text-slate-400">${b.customer_phone || ''}</div>
+                    <div class="text-xs text-zinc-400">${b.customer_phone || ''}</div>
                 </td>
                 <td class="p-4 text-center">
                     <span class="px-2 py-1 rounded text-xs font-bold 
@@ -444,9 +477,9 @@ export async function initInvoiceHistory(container, storeId = null) {
                 <td class="p-4 text-center">
                     ${paymentDetails}
                 </td>
-                <td class="p-4 text-right font-bold text-slate-800">₹${b.total_amount.toFixed(2)}</td>
+                <td class="p-4 text-right font-bold text-zinc-900">₹${b.total_amount.toFixed(2)}</td>
                 <td class="p-4 text-right">
-                    <button class="menu-trigger p-2 rounded-full hover:bg-slate-200 text-slate-400 transition-colors" data-id="${b.id}">
+                    <button class="menu-trigger p-2 rounded-full hover:bg-zinc-200 text-zinc-400 transition-colors" data-id="${b.id}">
                         <i data-lucide="more-vertical" class="w-4 h-4"></i>
                     </button>
                 </td>
@@ -473,11 +506,27 @@ export async function initInvoiceHistory(container, storeId = null) {
     container.querySelector('#download-all-report').addEventListener('click', () => {
         if (bills.length === 0) return;
 
+        // Escape a value for safe CSV output (handles commas, quotes, newlines, injection)
+        const csvEscape = (val) => {
+            const s = String(val ?? '');
+            // Prefix with apostrophe any value that starts with formula characters
+            const safe = /^[=+\-@]/.test(s) ? `'${s}` : s;
+            return /[",\n\r]/.test(safe) ? `"${safe.replace(/"/g, '""')}"` : safe;
+        };
+
         let csv = "Invoice No,Date,Customer,Phone,Status,GST Applied,Total Amount\n";
 
         csv += bills.map(b => {
             const invNum = b.invoice_number || `#${b.id.slice(0, 8).toUpperCase()}`;
-            return `${invNum},${new Date(b.created_at).toLocaleDateString()},${b.customer_name || 'Walk-in'},${b.customer_phone || ''},${b.payment_status || 'Paid'},${b.gst_applied},${b.total_amount}`;
+            return [
+                csvEscape(invNum),
+                csvEscape(new Date(b.created_at).toLocaleDateString()),
+                csvEscape(b.customer_name || 'Walk-in'),
+                csvEscape(b.customer_phone || ''),
+                csvEscape(b.payment_status || 'Paid'),
+                csvEscape(b.gst_applied),
+                csvEscape(b.total_amount)
+            ].join(',');
         }).join("\n");
 
         const encodedUri = encodeURI("data:text/csv;charset=utf-8," + csv);
@@ -517,7 +566,7 @@ async function generateAndDownloadPDF(billData) {
     const companySer = "Computer Hardware and Peripherals Sales & Services";
     const companyAddress = "Shop No. 3, Sameera Plaza, Naza Market, Lucknow (UP) - 226021";
     const companyPhone = "Ph: +91 96346 23233 | Email: jaysanresource555@gmail.com";
-    const gstinText = "GSTIN: 09ABCDE1234F1Z5";
+    const gstinText = COMPANY_CONFIG.gstin;
 
     /* =========================
        DB MAPPING

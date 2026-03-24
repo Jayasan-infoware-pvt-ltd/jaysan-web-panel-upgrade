@@ -8,15 +8,15 @@ export async function initStockTransfer(container) {
     container.innerHTML = `
         <div class="space-y-6">
             <div>
-                <h2 class="text-2xl font-bold text-slate-800">Stock Transfer</h2>
-                <p class="text-slate-500 text-sm mt-1">Move inventory between stores</p>
+                <h2 class="text-2xl font-bold text-zinc-900">Stock Transfer</h2>
+                <p class="text-zinc-500 text-sm mt-1">Move inventory between stores</p>
             </div>
 
             <!-- Transfer Form -->
             <div class="card p-6 relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-40 h-40 bg-indigo-50 rounded-bl-full opacity-50 -mr-10 -mt-10 pointer-events-none"></div>
 
-                <h3 class="font-bold text-lg text-slate-700 mb-5 flex items-center gap-2">
+                <h3 class="font-bold text-lg text-zinc-700 mb-5 flex items-center gap-2">
                     <i data-lucide="arrow-left-right" class="w-5 h-5 text-indigo-600"></i>
                     New Transfer
                 </h3>
@@ -44,7 +44,7 @@ export async function initStockTransfer(container) {
                         <label class="label">Quantity</label>
                         <div class="flex gap-2">
                             <input type="number" id="transfer-qty" class="input-field" placeholder="0" min="1" required>
-                            <span id="available-qty" class="text-xs text-slate-400 self-center whitespace-nowrap"></span>
+                            <span id="available-qty" class="text-xs text-zinc-400 self-center whitespace-nowrap"></span>
                         </div>
                     </div>
                 </div>
@@ -63,11 +63,11 @@ export async function initStockTransfer(container) {
 
             <!-- Transfer History -->
             <div class="card">
-                <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-                    <h3 class="font-semibold text-slate-700 text-sm flex items-center gap-2">
-                        <i data-lucide="history" class="w-4 h-4 text-slate-400"></i> Transfer History
+                <div class="p-4 border-b border-zinc-100 bg-zinc-50/50 flex justify-between items-center">
+                    <h3 class="font-semibold text-zinc-700 text-sm flex items-center gap-2">
+                        <i data-lucide="history" class="w-4 h-4 text-zinc-400"></i> Transfer History
                     </h3>
-                    <span class="text-xs text-slate-400" id="transfer-count">0 transfers</span>
+                    <span class="text-xs text-zinc-400" id="transfer-count">0 transfers</span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm">
@@ -81,8 +81,8 @@ export async function initStockTransfer(container) {
                                 <th class="p-3">Notes</th>
                             </tr>
                         </thead>
-                        <tbody id="transfer-history-body" class="divide-y divide-slate-100">
-                            <tr><td colspan="6" class="p-4 text-center text-slate-400">Loading...</td></tr>
+                        <tbody id="transfer-history-body" class="divide-y divide-zinc-100">
+                            <tr><td colspan="6" class="p-4 text-center text-zinc-400">Loading...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -256,22 +256,22 @@ export async function initStockTransfer(container) {
         container.querySelector('#transfer-count').textContent = `${(data || []).length} transfers`;
 
         if (!data || data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-slate-400">No transfers yet</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-zinc-400">No transfers yet</td></tr>';
             return;
         }
 
         tbody.innerHTML = data.map(t => `
-            <tr class="hover:bg-slate-50 transition-colors">
-                <td class="p-3 text-slate-500 text-xs">${new Date(t.created_at).toLocaleDateString()}</td>
-                <td class="p-3 font-medium text-slate-700">${t.product_name}</td>
+            <tr class="hover:bg-zinc-50 transition-colors">
+                <td class="p-3 text-zinc-500 text-xs">${new Date(t.created_at).toLocaleDateString()}</td>
+                <td class="p-3 font-medium text-zinc-700">${t.product_name}</td>
                 <td class="p-3">
                     <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-600">${t.from_store_name}</span>
                 </td>
                 <td class="p-3">
                     <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600">${t.to_store_name}</span>
                 </td>
-                <td class="p-3 text-right font-bold text-slate-800">${t.quantity}</td>
-                <td class="p-3 text-slate-500 text-xs truncate max-w-[200px]">${t.notes || '—'}</td>
+                <td class="p-3 text-right font-bold text-zinc-900">${t.quantity}</td>
+                <td class="p-3 text-zinc-500 text-xs truncate max-w-[200px]">${t.notes || '—'}</td>
             </tr>
         `).join('');
     }

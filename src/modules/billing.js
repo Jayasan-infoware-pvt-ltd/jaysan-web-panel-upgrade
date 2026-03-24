@@ -7,9 +7,9 @@ export async function initBilling(container, storeId = null) {
     if (!storeId) {
         container.innerHTML = `
             <div class="flex flex-col items-center justify-center h-full text-center p-8">
-                <i data-lucide="building-2" class="w-16 h-16 text-slate-300 mb-4 mx-auto"></i>
-                <h2 class="text-2xl font-bold text-slate-700">Please Select a Store</h2>
-                <p class="text-slate-500 mt-2 max-w-md mx-auto">You are currently viewing data for "All Stores". To generate a new invoice, please select a specific store from the sidebar dropdown.</p>
+                <i data-lucide="building-2" class="w-16 h-16 text-zinc-300 mb-4 mx-auto"></i>
+                <h2 class="text-2xl font-bold text-zinc-700">Please Select a Store</h2>
+                <p class="text-zinc-500 mt-2 max-w-md mx-auto">You are currently viewing data for "All Stores". To generate a new invoice, please select a specific store from the sidebar dropdown.</p>
             </div>
         `;
         if (window.lucide) window.lucide.createIcons();
@@ -20,13 +20,13 @@ export async function initBilling(container, storeId = null) {
             <!-- Product Selection (Left) -->
             <div class="w-1/2 flex flex-col gap-6">
                 <div>
-                     <h2 class="text-3xl font-bold text-slate-800 mb-2">New Bill</h2>
-                     <p class="text-slate-500">Select products, repairs, or add custom items</p>
+                     <h2 class="text-2xl font-bold text-zinc-900 mb-2">New Bill</h2>
+                     <p class="text-zinc-500">Select products, repairs, or add custom items</p>
                 </div>
                 
                 <div class="card p-6 flex-1 flex flex-col overflow-y-auto">
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Customer Details</label>
+                        <label class="block text-sm font-medium text-zinc-700 mb-1">Customer Details</label>
                         <div class="grid grid-cols-2 gap-4">
                             <input type="text" id="bill-cust-name" class="input-field" placeholder="Name">
                             <input type="text" id="bill-cust-phone" class="input-field" placeholder="Phone">
@@ -36,14 +36,14 @@ export async function initBilling(container, storeId = null) {
                     <!-- Search Section -->
                     <div class="grid grid-cols-2 gap-4 mb-6">
                         <div class="relative group">
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Add Stock Product</label>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1">Add Stock Product</label>
                             <input type="text" id="product-search" class="input-field" placeholder="Search product..." autocomplete="off">
-                            <div id="product-dropdown" class="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-lg shadow-xl z-50 max-h-60 overflow-y-auto hidden divide-y divide-slate-100"></div>
+                            <div id="product-dropdown" class="absolute left-0 right-0 top-full mt-1 bg-white border border-zinc-200 rounded-lg shadow-md z-50 max-h-60 overflow-y-auto hidden divide-y divide-zinc-100"></div>
                         </div>
                         <div class="relative group">
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Add Repair Ticket</label>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1">Add Repair Ticket</label>
                             <input type="text" id="repair-search" class="input-field" placeholder="Search Device / Serial..." autocomplete="off">
-                            <div id="repair-dropdown" class="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-lg shadow-xl z-50 max-h-60 overflow-y-auto hidden divide-y divide-slate-100"></div>
+                            <div id="repair-dropdown" class="absolute left-0 right-0 top-full mt-1 bg-white border border-zinc-200 rounded-lg shadow-md z-50 max-h-60 overflow-y-auto hidden divide-y divide-zinc-100"></div>
                         </div>
                     </div>
 
@@ -67,14 +67,14 @@ export async function initBilling(container, storeId = null) {
 
                     <!-- Manual Item Entry Divider -->
                     <div class="relative flex py-2 items-center">
-                        <div class="flex-grow border-t border-slate-200"></div>
-                        <span class="flex-shrink-0 mx-4 text-slate-400 text-xs uppercase font-medium">Or Add Manual Item / Service</span>
-                        <div class="flex-grow border-t border-slate-200"></div>
+                        <div class="flex-grow border-t border-zinc-200"></div>
+                        <span class="flex-shrink-0 mx-4 text-zinc-400 text-xs uppercase font-medium">Or Add Manual Item / Service</span>
+                        <div class="flex-grow border-t border-zinc-200"></div>
                     </div>
 
                     <!-- Manual Item Form -->
-                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 mb-4">
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Item / Service Details</label>
+                    <div class="bg-zinc-50 p-4 rounded-lg border border-zinc-200 mb-4">
+                        <label class="block text-sm font-medium text-zinc-700 mb-2">Item / Service Details</label>
                         <div class="grid grid-cols-12 gap-2 mb-2">
                              <div class="col-span-12 mb-2">
                                 <input type="text" id="manual-name" class="input-field h-9 text-sm" placeholder="Item Name / Device Model">
@@ -105,25 +105,25 @@ export async function initBilling(container, storeId = null) {
 
             <!-- Invoice Preview (Right) -->
             <div class="w-1/2 flex flex-col">
-                <div class="card h-full flex flex-col p-6 bg-white shadow-xl relative"> 
-                    <div class="flex justify-between items-start mb-6 border-b border-slate-100 pb-4">
+                <div class="card h-full flex flex-col p-6 bg-white shadow-md relative"> 
+                    <div class="flex justify-between items-start mb-6 border-b border-zinc-100 pb-4">
                         <div>
-                            <h3 class="font-bold text-xl text-slate-800">Invoice Draft</h3>
-                            <p class="text-xs text-slate-400" id="invoice-date">${new Date().toLocaleDateString()}</p>
+                            <h3 class="font-bold text-xl text-zinc-900">Invoice Draft</h3>
+                            <p class="text-xs text-zinc-400" id="invoice-date">${new Date().toLocaleDateString()}</p>
                         </div>
                          <div class="flex items-center gap-3">
-                             <select id="payment-status" class="input-field h-10 text-xs py-0 pl-3 pr-8 w-36 bg-slate-50 border-slate-200 focus:ring-0">
+                             <select id="payment-status" class="input-field h-10 text-xs py-0 pl-3 pr-8 w-36 bg-zinc-50 border-zinc-200 focus:ring-0">
                                 <option value="Paid">Paid</option>
                                 <option value="Pending">Pending</option>
                             </select>
                              
                              <!-- GST Controls -->
-                             <div class="flex items-center gap-2 bg-slate-50 p-1 rounded-lg border border-slate-200">
+                             <div class="flex items-center gap-2 bg-zinc-50 p-1 rounded-lg border border-zinc-200">
                                 <label class="inline-flex items-center cursor-pointer mr-1">
                                     <input type="checkbox" id="gst-toggle" class="sr-only peer">
-                                    <span class="px-2 py-1 text-xs font-bold text-slate-400 peer-checked:text-slate-800 transition-colors">GST</span>
+                                    <span class="px-2 py-1 text-xs font-bold text-zinc-400 peer-checked:text-zinc-900 transition-colors">GST</span>
                                 </label>
-                                <select id="gst-type-select" class="h-6 text-[10px] py-0 pl-2 pr-6 border-none bg-transparent text-slate-600 font-medium focus:ring-0 hidden" disabled>
+                                <select id="gst-type-select" class="h-6 text-[10px] py-0 pl-2 pr-6 border-none bg-transparent text-zinc-600 font-medium focus:ring-0 hidden" disabled>
                                     <option value="CGST_SGST">CGST/SGST</option>
                                     <option value="IGST">IGST (18%)</option>
                                 </select>
@@ -137,11 +137,11 @@ export async function initBilling(container, storeId = null) {
                         <div class="flex items-center gap-4 mb-3">
                             <label class="inline-flex items-center cursor-pointer">
                                 <input type="radio" name="payment-method" value="Cash" class="form-radio text-emerald-600" checked>
-                                <span class="ml-2 text-sm text-slate-700">Cash</span>
+                                <span class="ml-2 text-sm text-zinc-700">Cash</span>
                             </label>
                             <label class="inline-flex items-center cursor-pointer">
                                 <input type="radio" name="payment-method" value="Online" class="form-radio text-emerald-600">
-                                <span class="ml-2 text-sm text-slate-700">Online</span>
+                                <span class="ml-2 text-sm text-zinc-700">Online</span>
                             </label>
                         </div>
                         <!-- Cash Fields -->
@@ -166,7 +166,7 @@ export async function initBilling(container, storeId = null) {
 
                     <div class="flex-1 overflow-y-auto custom-scrollbar">
                         <table class="w-full text-left">
-                            <thead class="text-xs text-slate-500 uppercase bg-slate-50 sticky top-0">
+                            <thead class="text-xs text-zinc-500 uppercase bg-zinc-50 sticky top-0">
                                 <tr>
                                     <th class="py-2 px-2 rounded-l-lg w-1/3">Item</th>
                                     <th class="py-2 w-1/4">Details</th>
@@ -176,39 +176,39 @@ export async function initBilling(container, storeId = null) {
                                     <th class="py-2"></th>
                                 </tr>
                             </thead>
-                            <tbody id="cart-items" class="text-slate-700 text-sm divide-y divide-slate-50">
+                            <tbody id="cart-items" class="text-zinc-700 text-sm divide-y divide-zinc-50">
                                 <!-- Cart Items -->
                             </tbody>
                         </table>
-                         <div id="empty-cart-msg" class="text-center py-10 text-slate-400 text-sm italic">
+                         <div id="empty-cart-msg" class="text-center py-10 text-zinc-400 text-sm italic">
                             No items added yet.
                         </div>
                     </div>
 
-                    <div class="bg-slate-50 rounded-xl p-4 mt-4 space-y-2 border border-slate-100">
-                        <div class="flex justify-between text-slate-600">
+                    <div class="bg-zinc-50 rounded-xl p-4 mt-4 space-y-2 border border-zinc-100">
+                        <div class="flex justify-between text-zinc-600">
                             <span>Subtotal</span>
                             <span id="subtotal-display">₹0.00</span>
                         </div>
-                        <div class="flex justify-between text-slate-600 hidden gst-line" id="cgst-row">
+                        <div class="flex justify-between text-zinc-600 hidden gst-line" id="cgst-row">
                             <span>CGST (9%)</span>
                             <span id="cgst-display">₹0.00</span>
                         </div>
-                        <div class="flex justify-between text-slate-600 hidden gst-line" id="sgst-row">
+                        <div class="flex justify-between text-zinc-600 hidden gst-line" id="sgst-row">
                             <span>SGST (9%)</span>
                             <span id="sgst-display">₹0.00</span>
                         </div>
-                        <div class="flex justify-between text-slate-600 hidden gst-line" id="igst-row">
+                        <div class="flex justify-between text-zinc-600 hidden gst-line" id="igst-row">
                             <span>IGST (18%)</span>
                             <span id="igst-display">₹0.00</span>
                         </div>
-                        <div class="flex justify-between text-xl font-bold text-slate-900 pt-2 border-t border-slate-200">
+                        <div class="flex justify-between text-xl font-bold text-zinc-900 pt-2 border-t border-zinc-200">
                             <span>Total</span>
                             <span id="total-display">₹0.00</span>
                         </div>
                     </div>
 
-                    <button id="generate-bill-btn" class="btn-primary w-full mt-4 py-3 text-lg shadow-lg shadow-primary/20" disabled>
+                    <button id="generate-bill-btn" class="btn-primary w-full mt-4 py-3 text-lg shadow-sm shadow-primary/20" disabled>
                         Generate Invoice
                     </button>
                     <div id="post-bill-actions" class="hidden grid-cols-2 gap-4 mt-4">
@@ -316,9 +316,9 @@ export async function initBilling(container, storeId = null) {
         }
         const matches = products.filter(p => p.name.toLowerCase().includes(val));
         dropdown.innerHTML = matches.map(p => `
-            <div class="p-3 hover:bg-slate-50 cursor-pointer border-b border-slate-100 last:border-0" data-id="${p.id}">
-                <div class="font-medium text-slate-800">${p.name}</div>
-                <div class="text-xs text-slate-500">₹${p.price} | Stock: ${p.quantity}</div>
+            <div class="p-3 hover:bg-zinc-50 cursor-pointer border-b border-zinc-100 last:border-0" data-id="${p.id}">
+                <div class="font-medium text-zinc-900">${p.name}</div>
+                <div class="text-xs text-zinc-500">₹${p.price} | Stock: ${p.quantity}</div>
             </div>
         `).join('');
         if (matches.length > 0) dropdown.classList.remove('hidden');
@@ -355,9 +355,9 @@ export async function initBilling(container, storeId = null) {
         );
 
         repairDropdown.innerHTML = matches.map(r => `
-             <div class="p-3 hover:bg-slate-50 cursor-pointer border-b border-slate-100 last:border-0" data-id="${r.id}">
-                <div class="font-medium text-slate-800">${r.device_details} <span class="text-xs text-slate-400">(${r.status})</span></div>
-                <div class="text-xs text-slate-500">SN: ${r.serial_number || 'N/A'} | Cost: ₹${r.estimated_cost}</div>
+             <div class="p-3 hover:bg-zinc-50 cursor-pointer border-b border-zinc-100 last:border-0" data-id="${r.id}">
+                <div class="font-medium text-zinc-900">${r.device_details} <span class="text-xs text-zinc-400">(${r.status})</span></div>
+                <div class="text-xs text-zinc-500">SN: ${r.serial_number || 'N/A'} | Cost: ₹${r.estimated_cost}</div>
             </div>
         `).join('');
 
@@ -486,24 +486,24 @@ export async function initBilling(container, storeId = null) {
             emptyMsg.classList.add('hidden');
             cartTbody.innerHTML = cart.map((item, idx) => {
                 let details = '';
-                if (item.serial) details += `<span class="block text-xs text-slate-500">SN: ${item.serial}</span>`;
-                if (item.part_name) details += `<span class="block text-xs text-slate-500">Part: ${item.part_name}</span>`;
-                if (item.problem) details += `<span class="block text-xs text-slate-500">Svc: ${item.problem}</span>`;
+                if (item.serial) details += `<span class="block text-xs text-zinc-500">SN: ${item.serial}</span>`;
+                if (item.part_name) details += `<span class="block text-xs text-zinc-500">Part: ${item.part_name}</span>`;
+                if (item.problem) details += `<span class="block text-xs text-zinc-500">Svc: ${item.problem}</span>`;
 
                 return `
-                <tr class="group hover:bg-slate-50 transition-colors">
-                    <td class="py-3 px-2 font-medium text-slate-800 align-top">
+                <tr class="group hover:bg-zinc-50 transition-colors">
+                    <td class="py-3 px-2 font-medium text-zinc-900 align-top">
                         ${item.name} 
-                        ${item.isManual ? '<span class="text-[10px] bg-slate-100 text-slate-500 px-1 rounded border border-slate-200 ml-1">MANUAL</span>' : ''}
+                        ${item.isManual ? '<span class="text-[10px] bg-zinc-100 text-zinc-500 px-1 rounded border border-zinc-200 ml-1">MANUAL</span>' : ''}
                     </td>
                     <td class="py-3 pr-2 align-top">
                         ${details}
                     </td>
-                    <td class="py-3 text-center text-slate-600 align-top">${item.qty}</td>
-                    <td class="py-3 text-right text-slate-600 align-top">₹${item.price.toFixed(2)}</td>
+                    <td class="py-3 text-center text-zinc-600 align-top">${item.qty}</td>
+                    <td class="py-3 text-right text-zinc-600 align-top">₹${item.price.toFixed(2)}</td>
                     <td class="py-3 text-right font-medium px-2 align-top">₹${(item.price * item.qty).toFixed(2)}</td>
                     <td class="py-3 text-right pr-2 opacity-0 group-hover:opacity-100 transition-opacity align-top">
-                        <button class="cart-remove-btn text-slate-400 hover:text-red-500 transition-colors" data-idx="${idx}">
+                        <button class="cart-remove-btn text-zinc-400 hover:text-red-500 transition-colors" data-idx="${idx}">
                             <i data-lucide="trash-2" class="w-4 h-4"></i>
                         </button>
                     </td>

@@ -5,7 +5,7 @@ export async function initRepairHistory(container, storeId = null) {
     container.innerHTML = `
         <div class="space-y-6">
             <div class="flex justify-between items-center">
-                <h2 class="text-3xl font-bold text-slate-800">Repair History</h2>
+                <h2 class="text-2xl font-bold text-zinc-900">Repair History</h2>
                 <button id="export-repairs-btn" class="btn-secondary flex items-center gap-2 text-sm">
                     <i data-lucide="download" class="w-4 h-4"></i> Export CSV
                 </button>
@@ -13,15 +13,15 @@ export async function initRepairHistory(container, storeId = null) {
 
             <div class="card p-4 flex gap-4">
                  <div class="relative flex-1">
-                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 pointer-events-none"></i>
+                    <i data-lucide="search" class="absolute left-3 top-1/2 -tranzinc-y-1/2 text-zinc-400 w-5 h-5 pointer-events-none"></i>
                     <input type="text" id="search-repair" placeholder="Search customer, device or status..." class="input-field pl-12" />
                 </div>
             </div>
 
             <div class="card overflow-hidden relative">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-slate-600">
-                        <thead class="bg-slate-50 text-xs uppercase font-semibold text-slate-500 border-b border-slate-200">
+                    <table class="w-full text-left text-sm text-zinc-600">
+                        <thead class="bg-zinc-50 text-xs uppercase font-semibold text-zinc-500 border-b border-zinc-200">
                             <tr>
                                 <th class="p-4">Date</th>
                                 <th class="p-4">Customer</th>
@@ -33,7 +33,7 @@ export async function initRepairHistory(container, storeId = null) {
                                 <th class="p-4 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="repair-list-body" class="divide-y divide-slate-100">
+                        <tbody id="repair-list-body" class="divide-y divide-zinc-100">
                             <tr><td colspan="8" class="p-8 text-center">Loading...</td></tr>
                         </tbody>
                     </table>
@@ -43,19 +43,19 @@ export async function initRepairHistory(container, storeId = null) {
         
 
         <!-- Modal for Full Details -->
-        <div id="detail-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="bg-white rounded-lg shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
-                <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                    <h3 class="text-lg font-bold text-slate-800">Repair Details</h3>
-                    <button id="close-modal-btn" class="text-slate-400 hover:text-red-500 transition-colors">
+        <div id="detail-modal" class="fixed inset-0 z-50 hidden bg-zinc-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-md w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
+                <div class="px-6 py-4 border-b border-zinc-100 flex justify-between items-center bg-zinc-50">
+                    <h3 class="text-lg font-bold text-zinc-900">Repair Details</h3>
+                    <button id="close-modal-btn" class="text-zinc-400 hover:text-red-500 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                     </button>
                 </div>
                 <div id="modal-content" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
                     <!-- Content injected via JS -->
                 </div>
-                <div class="px-6 py-4 bg-slate-50 flex justify-end gap-3">
-                    <button id="close-modal-action" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded font-medium transition-colors">Close</button>
+                <div class="px-6 py-4 bg-zinc-50 flex justify-end gap-3">
+                    <button id="close-modal-action" class="px-4 py-2 bg-zinc-200 hover:bg-zinc-300 text-zinc-700 rounded font-medium transition-colors">Close</button>
                     <button id="edit-repair-from-view-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded font-medium transition-colors flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
                         Edit
@@ -65,11 +65,11 @@ export async function initRepairHistory(container, storeId = null) {
         </div>
 
         <!-- Edit Modal for Repair -->
-        <div id="edit-repair-modal" class="fixed inset-0 z-[60] hidden bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="bg-white rounded-lg shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
-                <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                    <h3 class="text-lg font-bold text-slate-800">Edit Repair</h3>
-                    <button id="close-edit-repair-btn" class="text-slate-400 hover:text-red-500 transition-colors">
+        <div id="edit-repair-modal" class="fixed inset-0 z-[60] hidden bg-zinc-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-md w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
+                <div class="px-6 py-4 border-b border-zinc-100 flex justify-between items-center bg-zinc-50">
+                    <h3 class="text-lg font-bold text-zinc-900">Edit Repair</h3>
+                    <button id="close-edit-repair-btn" class="text-zinc-400 hover:text-red-500 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                     </button>
                 </div>
@@ -77,27 +77,27 @@ export async function initRepairHistory(container, storeId = null) {
                     <input type="hidden" id="edit-repair-id">
                     <div class="grid grid-cols-2 gap-4">
                         <div class="col-span-2">
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Customer Name</label>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1">Customer Name</label>
                             <input type="text" id="edit-cust-name" class="input-field" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Contact Number</label>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1">Contact Number</label>
                             <input type="text" id="edit-cust-contact" class="input-field">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Technician</label>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1">Technician</label>
                             <input type="text" id="edit-technician" class="input-field">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Device</label>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1">Device</label>
                             <input type="text" id="edit-device" class="input-field" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Model Number</label>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1">Model Number</label>
                             <input type="text" id="edit-model" class="input-field">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1">Status</label>
                             <select id="edit-status" class="input-field">
                                 <option value="Received">Received</option>
                                 <option value="In Progress">In Progress</option>
@@ -107,21 +107,21 @@ export async function initRepairHistory(container, storeId = null) {
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Estimated Cost (₹)</label>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1">Estimated Cost (₹)</label>
                             <input type="number" id="edit-cost" class="input-field" min="0" value="0">
                         </div>
                         <div class="col-span-2">
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Part Replaced</label>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1">Part Replaced</label>
                             <input type="text" id="edit-part" class="input-field" placeholder="None">
                         </div>
                         <div class="col-span-2">
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Issue Description</label>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1">Issue Description</label>
                             <textarea id="edit-issue" class="input-field" rows="3"></textarea>
                         </div>
                     </div>
                 </form>
-                <div class="px-6 py-4 bg-slate-50 flex justify-end gap-3">
-                    <button id="cancel-edit-repair-btn" type="button" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded font-medium transition-colors">Cancel</button>
+                <div class="px-6 py-4 bg-zinc-50 flex justify-end gap-3">
+                    <button id="cancel-edit-repair-btn" type="button" class="px-4 py-2 bg-zinc-200 hover:bg-zinc-300 text-zinc-700 rounded font-medium transition-colors">Cancel</button>
                     <button id="save-edit-repair-btn" type="button" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded font-medium transition-colors flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v13a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
                         Save Changes
@@ -141,19 +141,19 @@ export async function initRepairHistory(container, storeId = null) {
 
     popupMenu = document.createElement('div');
     popupMenu.id = 'repair-action-menu';
-    popupMenu.className = 'hidden fixed z-[500] bg-white rounded-lg shadow-lg border border-slate-100 w-40 py-1';
+    popupMenu.className = 'hidden fixed z-[500] bg-white rounded-lg shadow-sm border border-zinc-100 w-40 py-1';
     popupMenu.style.transition = 'opacity 150ms ease, transform 150ms ease';
     popupMenu.innerHTML = `
-        <button id="repair-popup-view" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+        <button id="repair-popup-view" class="w-full text-left px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
             View Detail
         </button>
-        <div class="border-t border-slate-100 my-1"></div>
-        <button id="repair-popup-edit" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+        <div class="border-t border-zinc-100 my-1"></div>
+        <button id="repair-popup-edit" class="w-full text-left px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
             Edit
         </button>
-        <div class="border-t border-slate-100 my-1"></div>
+        <div class="border-t border-zinc-100 my-1"></div>
         <button id="repair-popup-delete" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
             Delete
@@ -257,29 +257,29 @@ export async function initRepairHistory(container, storeId = null) {
         modalContent.innerHTML = `
             <div class="grid grid-cols-2 gap-4">
                 <div class="col-span-2">
-                    <label class="text-xs font-bold text-slate-400 uppercase">Customer Info</label>
-                    <div class="text-slate-800 font-medium">${repair.customer_name}</div>
-                    <div class="text-slate-500 text-sm">${repair.contact_number || 'No contact'}</div>
+                    <label class="text-xs font-bold text-zinc-400 uppercase">Customer Info</label>
+                    <div class="text-zinc-900 font-medium">${repair.customer_name}</div>
+                    <div class="text-zinc-500 text-sm">${repair.contact_number || 'No contact'}</div>
                 </div>
                 
                 <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase">Device</label>
-                    <div class="text-slate-800 font-medium">${repair.device_details}</div>
-                    <div class="text-xs text-slate-500">Model: ${repair.model_number || '-'}</div>
+                    <label class="text-xs font-bold text-zinc-400 uppercase">Device</label>
+                    <div class="text-zinc-900 font-medium">${repair.device_details}</div>
+                    <div class="text-xs text-zinc-500">Model: ${repair.model_number || '-'}</div>
                 </div>
 
                 <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase">Serial No.</label>
-                    <div class="text-slate-800 font-mono">${repair.serial_number || '-'}</div>
+                    <label class="text-xs font-bold text-zinc-400 uppercase">Serial No.</label>
+                    <div class="text-zinc-900 font-mono">${repair.serial_number || '-'}</div>
                 </div>
 
                 <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase">Technician</label>
-                    <div class="text-slate-800">${repair.technician_name || '-'}</div>
+                    <label class="text-xs font-bold text-zinc-400 uppercase">Technician</label>
+                    <div class="text-zinc-900">${repair.technician_name || '-'}</div>
                 </div>
 
                 <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase">Status</label>
+                    <label class="text-xs font-bold text-zinc-400 uppercase">Status</label>
                     <div class="mt-1 inline-block">
                         <span class="px-2 py-1 rounded-full text-xs font-bold
                             ${repair.status === 'Delivered' ? 'bg-green-100 text-green-700' :
@@ -291,18 +291,18 @@ export async function initRepairHistory(container, storeId = null) {
                 </div>
 
                 <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase">Estimated Cost</label>
-                    <div class="text-slate-800 font-bold">₹${repair.estimated_cost || 0}</div>
+                    <label class="text-xs font-bold text-zinc-400 uppercase">Estimated Cost</label>
+                    <div class="text-zinc-900 font-bold">₹${repair.estimated_cost || 0}</div>
                 </div>
                 
                 <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase">Part Replaced</label>
-                    <div class="text-slate-800">${repair.part_replaced_name || 'None'}</div>
+                    <label class="text-xs font-bold text-zinc-400 uppercase">Part Replaced</label>
+                    <div class="text-zinc-900">${repair.part_replaced_name || 'None'}</div>
                 </div>
 
                 <div class="col-span-2">
-                    <label class="text-xs font-bold text-slate-400 uppercase">Issue Description</label>
-                    <div class="p-3 bg-slate-50 rounded border border-slate-100 text-sm text-slate-700 mt-1">
+                    <label class="text-xs font-bold text-zinc-400 uppercase">Issue Description</label>
+                    <div class="p-3 bg-zinc-50 rounded border border-zinc-100 text-sm text-zinc-700 mt-1">
                         ${repair.issue_description || 'No description provided.'}
                     </div>
                 </div>
@@ -318,7 +318,7 @@ export async function initRepairHistory(container, storeId = null) {
                 </div>
                 ` : ''}
 
-                <div class="col-span-2 text-xs text-slate-400 border-t pt-2 mt-2">
+                <div class="col-span-2 text-xs text-zinc-400 border-t pt-2 mt-2">
                     Created on: ${new Date(repair.created_at).toLocaleString()} <br>
                     ID: ${repair.id}
                 </div>
@@ -429,28 +429,28 @@ export async function initRepairHistory(container, storeId = null) {
     // --- Rendering ---
     function renderTable(items) {
         if (items.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-slate-400">No repair records found</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-zinc-400">No repair records found</td></tr>`;
             return;
         }
 
         tbody.innerHTML = items.map(r => `
-            <tr class="hover:bg-slate-50 transition-colors">
+            <tr class="hover:bg-zinc-50 transition-colors">
                 <td class="p-4 whitespace-nowrap">
-                    <div class="font-medium text-slate-700">${new Date(r.created_at).toLocaleDateString()}</div>
-                    <div class="text-xs text-slate-400">${new Date(r.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                    <div class="font-medium text-zinc-700">${new Date(r.created_at).toLocaleDateString()}</div>
+                    <div class="text-xs text-zinc-400">${new Date(r.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                     ${r.status === 'Delivered' && r.delivered_at ? `
-                        <div class="mt-1 pt-1 border-t border-slate-100">
+                        <div class="mt-1 pt-1 border-t border-zinc-100">
                              <span class="text-[10px] font-bold text-green-600 uppercase">Delivered</span>
                              <div class="text-xs text-green-700 font-medium">${new Date(r.delivered_at).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</div>
                         </div>
                     ` : ''}
                 </td>
-                <td class="p-4 font-medium text-slate-800">
+                <td class="p-4 font-medium text-zinc-900">
                     ${r.customer_name}
-                    <div class="text-xs text-slate-400">${r.contact_number || ''}</div>
+                    <div class="text-xs text-zinc-400">${r.contact_number || ''}</div>
                 </td>
                 <td class="p-4">${r.device_details}</td>
-                <td class="p-4 font-mono text-xs text-slate-500">${r.model_number || '-'}</td>
+                <td class="p-4 font-mono text-xs text-zinc-500">${r.model_number || '-'}</td>
                 <td class="p-4 max-w-xs truncate" title="${r.issue_description || ''}">${r.issue_description || '-'}</td>
                 <td class="p-4">
                     <span class="px-2 py-1 rounded-full text-xs font-bold 
@@ -462,7 +462,7 @@ export async function initRepairHistory(container, storeId = null) {
                 </td>
                 <td class="p-4 text-right font-medium">₹${r.estimated_cost || 0}</td>
                 <td class="p-4 text-right">
-                    <button class="menu-trigger p-2 rounded-full hover:bg-slate-200 text-slate-400 transition-colors" data-id="${r.id}">
+                    <button class="menu-trigger p-2 rounded-full hover:bg-zinc-200 text-zinc-400 transition-colors" data-id="${r.id}">
                         <i data-lucide="more-vertical" class="w-4 h-4"></i>
                     </button>
                 </td>

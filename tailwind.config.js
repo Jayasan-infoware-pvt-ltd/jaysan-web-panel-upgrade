@@ -7,14 +7,19 @@ export default {
     theme: {
         extend: {
             colors: {
-                primary: '#0f172a',    // 900
-                secondary: '#334155',  // 700
-                accent: '#3b82f6',     // blue-500
-                background: '#f8fafc', // slate-50
+                primary: '#2563eb',
+                'primary-hover': '#1d4ed8',
+                secondary: '#3f3f46',
+                accent: '#2563eb',
+                background: '#f8fafc',
                 surface: '#ffffff',
+                border: '#e4e4e7',
             },
             fontFamily: {
-                sans: ['Inter', 'sans-serif'],
+                sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            },
+            borderRadius: {
+                DEFAULT: '8px',
             }
         },
     },

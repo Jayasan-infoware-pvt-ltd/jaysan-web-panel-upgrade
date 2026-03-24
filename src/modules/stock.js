@@ -5,7 +5,7 @@ export async function initStock(container, storeId = null) {
     container.innerHTML = `
         <div class="space-y-6">
             <div class="flex justify-between items-center">
-                <h2 class="text-3xl font-bold text-slate-800">Stock Inventory</h2>
+                <h2 class="text-2xl font-bold text-zinc-900">Stock Inventory</h2>
                 <div class="flex gap-2">
                     <button id="export-stock-btn" class="btn-secondary flex items-center gap-2 text-sm">
                         <i data-lucide="download" class="w-4 h-4"></i> Export CSV
@@ -20,7 +20,7 @@ export async function initStock(container, storeId = null) {
 
             <div class="card p-4 flex gap-4">
                 <div class="relative flex-1">
-                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 pointer-events-none"></i>
+                    <i data-lucide="search" class="absolute left-3 top-1/2 -tranzinc-y-1/2 text-zinc-400 w-5 h-5 pointer-events-none"></i>
                     <input type="text" id="search-stock" placeholder="Search products..." class="input-field pl-12" />
                 </div>
                 <div class="w-48">
@@ -34,7 +34,7 @@ export async function initStock(container, storeId = null) {
             <div class="card overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 text-sm uppercase tracking-wider">
+                        <tr class="bg-zinc-50 border-b border-zinc-100 text-zinc-500 text-sm uppercase tracking-wider">
                             <th class="p-4 font-semibold w-24">Img</th>
                             <th class="p-4 font-semibold">Product Name</th>
                             <th class="p-4 font-semibold">Category</th>
@@ -45,7 +45,7 @@ export async function initStock(container, storeId = null) {
                             <th class="p-4 font-semibold text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="stock-table-body" class="text-slate-700 divide-y divide-slate-100">
+                    <tbody id="stock-table-body" class="text-zinc-700 divide-y divide-zinc-100">
                         <tr><td colspan="8" class="p-4 text-center">Loading...</td></tr>
                     </tbody>
                 </table>
@@ -54,35 +54,35 @@ export async function initStock(container, storeId = null) {
 
         <!-- Modal Template -->
         <div id="product-modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-[100] backdrop-blur-sm">
-            <div class="bg-white rounded-xl p-8 w-full max-w-md shadow-2xl transform transition-all scale-100 ring-1 ring-black/5 max-h-[90vh] overflow-y-auto overscroll-contain">
+            <div class="bg-white rounded-xl p-8 w-full max-w-md shadow-lg transform transition-all scale-100 ring-1 ring-black/5 max-h-[90vh] overflow-y-auto overscroll-contain">
                 <h3 id="modal-title" class="text-xl font-bold mb-4">Add Product</h3>
                 <form id="product-form" class="space-y-4">
                     <input type="hidden" id="product-id">
                     
                     <!-- Multi-Image Upload -->
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Product Images</label>
+                        <label class="block text-sm font-medium text-zinc-700 mb-2">Product Images</label>
                         <div class="grid grid-cols-3 gap-2" id="image-gallery-preview">
                              <!-- Preview Items -->
                         </div>
-                        <label class="mt-2 flex items-center justify-center w-full h-12 border-2 border-dashed border-slate-300 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors">
-                            <i data-lucide="plus" class="w-5 h-5 text-slate-400 mr-2"></i>
-                            <span class="text-sm text-slate-500">Add Images</span>
+                        <label class="mt-2 flex items-center justify-center w-full h-12 border-2 border-dashed border-zinc-300 rounded-lg hover:bg-zinc-50 cursor-pointer transition-colors">
+                            <i data-lucide="plus" class="w-5 h-5 text-zinc-400 mr-2"></i>
+                            <span class="text-sm text-zinc-500">Add Images</span>
                             <input type="file" id="product-image-input" accept="image/*" multiple class="hidden">
                         </label>
-                        <button type="button" id="add-image-url-btn" class="flex flex-col items-center justify-center w-full h-12 border-2 border-dashed border-slate-300 rounded-lg hover:bg-slate-50 text-slate-500 hover:text-blue-600 transition-colors">
+                        <button type="button" id="add-image-url-btn" class="flex flex-col items-center justify-center w-full h-12 border-2 border-dashed border-zinc-300 rounded-lg hover:bg-zinc-50 text-zinc-500 hover:text-blue-600 transition-colors">
                             <i data-lucide="link" class="w-5 h-5 mb-1"></i>
                             <span class="text-[10px]">Add via URL</span>
                         </button>
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Product Name</label>
+                        <label class="block text-sm font-medium text-zinc-700 mb-1">Product Name</label>
                         <input type="text" id="product-name" required class="input-field" placeholder="e.g. iPhone Screen">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Category / Tag</label>
+                        <label class="block text-sm font-medium text-zinc-700 mb-1">Category / Tag</label>
                         <input type="text" id="product-category" class="input-field" list="category-suggestions" placeholder="e.g. Printer, Cables, Screen...">
                         <datalist id="category-suggestions">
                             <option value="Printer">
@@ -96,11 +96,11 @@ export async function initStock(container, storeId = null) {
                     
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Selling Price</label>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1">Selling Price</label>
                             <input type="number" id="product-price" required class="input-field" placeholder="0.00">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Quantity</label>
+                            <label class="block text-sm font-medium text-zinc-700 mb-1">Quantity</label>
                             <input type="number" id="product-qty" required class="input-field" placeholder="0" min="0">
                         </div>
                     </div>
@@ -123,26 +123,26 @@ export async function initStock(container, storeId = null) {
                     </div>
 
                     <!-- Dynamic Serials Container -->
-                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Serial Numbers</label>
+                    <div class="bg-zinc-50 p-3 rounded-lg border border-zinc-100">
+                        <label class="block text-xs font-bold text-zinc-500 uppercase mb-2">Serial Numbers</label>
                         <div id="serials-container" class="space-y-2 max-h-40 overflow-y-auto pr-1">
-                            <p class="text-xs text-slate-400 italic">Enter quantity to add serial numbers.</p>
+                            <p class="text-xs text-zinc-400 italic">Enter quantity to add serial numbers.</p>
                         </div>
                     </div>
                     
                     <!-- Vendor/Location Fields -->
-                    <div class="space-y-4 pt-2 border-t border-slate-100">
+                    <div class="space-y-4 pt-2 border-t border-zinc-100">
                         <div>
-                             <label class="block text-sm font-medium text-slate-700 mb-1">Vendor/Supplier Name</label>
+                             <label class="block text-sm font-medium text-zinc-700 mb-1">Vendor/Supplier Name</label>
                              <input type="text" id="product-vendor" class="input-field" placeholder="e.g. ABC Electronics">
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Sourced From</label>
+                                <label class="block text-sm font-medium text-zinc-700 mb-1">Sourced From</label>
                                 <input type="text" id="product-location" class="input-field" placeholder="e.g. Bangalore">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Courier Charges</label>
+                                <label class="block text-sm font-medium text-zinc-700 mb-1">Courier Charges</label>
                                 <input type="number" id="product-courier" class="input-field" placeholder="0" value="0">
                             </div>
                         </div>
@@ -155,21 +155,21 @@ export async function initStock(container, storeId = null) {
                 </form>
 
                 <!-- Meta Info Panel (shown in view mode) -->
-                <div id="product-meta-panel" class="hidden mt-4 pt-4 border-t border-slate-100 space-y-3">
+                <div id="product-meta-panel" class="hidden mt-4 pt-4 border-t border-zinc-100 space-y-3">
                     <div class="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                            <span class="text-xs font-bold text-slate-400 uppercase">Created</span>
-                            <div id="meta-created" class="text-slate-700 font-medium mt-0.5">—</div>
+                            <span class="text-xs font-bold text-zinc-400 uppercase">Created</span>
+                            <div id="meta-created" class="text-zinc-700 font-medium mt-0.5">—</div>
                         </div>
                         <div>
-                            <span class="text-xs font-bold text-slate-400 uppercase">Last Updated</span>
-                            <div id="meta-updated" class="text-slate-700 font-medium mt-0.5">—</div>
+                            <span class="text-xs font-bold text-zinc-400 uppercase">Last Updated</span>
+                            <div id="meta-updated" class="text-zinc-700 font-medium mt-0.5">—</div>
                         </div>
                     </div>
                     <div>
-                        <span class="text-xs font-bold text-slate-400 uppercase mb-2 block">Update History</span>
-                        <div id="product-history-list" class="space-y-1 max-h-48 overflow-y-auto overscroll-contain text-xs text-slate-600">
-                            <div class="text-slate-400 italic">Loading history...</div>
+                        <span class="text-xs font-bold text-zinc-400 uppercase mb-2 block">Update History</span>
+                        <div id="product-history-list" class="space-y-1 max-h-48 overflow-y-auto overscroll-contain text-xs text-zinc-600">
+                            <div class="text-zinc-400 italic">Loading history...</div>
                         </div>
                     </div>
                 </div>
@@ -187,7 +187,7 @@ export async function initStock(container, storeId = null) {
                  <button id="lightbox-prev" class="absolute left-4 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors z-[120]">
                     <i data-lucide="chevron-left" class="w-8 h-8"></i>
                  </button>
-                 <img id="lightbox-img" class="max-h-[90vh] max-w-[90vw] object-contain rounded-lg shadow-2xl" src="" alt="Preview">
+                 <img id="lightbox-img" class="max-h-[90vh] max-w-[90vw] object-contain rounded-lg shadow-lg" src="" alt="Preview">
                  <button id="lightbox-next" class="absolute right-4 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors z-[120]">
                     <i data-lucide="chevron-right" class="w-8 h-8"></i>
                  </button>
@@ -247,7 +247,7 @@ export async function initStock(container, storeId = null) {
             'Printer': 'bg-orange-100 text-orange-800',
             'Toner / Cartridge': 'bg-cyan-100 text-cyan-800',
             'Cables': 'bg-gray-100 text-gray-800',
-            'Accessories': 'bg-purple-100 text-purple-800',
+            'Accessories': 'bg-violet-100 text-violet-800',
             'Spare Parts': 'bg-indigo-100 text-indigo-800',
             'Mobile': 'bg-pink-100 text-pink-800',
             'General': 'bg-blue-100 text-blue-800'
@@ -257,7 +257,7 @@ export async function initStock(container, storeId = null) {
 
     function renderTable(items) {
         if (items.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-slate-400">No products found</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-zinc-400">No products found</td></tr>`;
             return;
         }
         tbody.innerHTML = items.map(p => {
@@ -265,17 +265,17 @@ export async function initStock(container, storeId = null) {
             const thumb = images.length > 0 ? images[0] : null;
 
             return `
-            <tr class="hover:bg-slate-50 transition-colors">
+            <tr class="hover:bg-zinc-50 transition-colors">
                 <td class="p-4">
                     ${thumb ?
                     `<div class="relative w-12 h-12 group cursor-zoom-in img-preview-trigger" data-id="${p.id}">
-                             <img src="${thumb}" class="w-12 h-12 rounded-lg object-cover border border-slate-200" alt="${p.name}">
+                             <img src="${thumb}" class="w-12 h-12 rounded-lg object-cover border border-zinc-200" alt="${p.name}">
                              ${images.length > 1 ? `<span class="absolute bottom-0 right-0 bg-black/60 text-white text-[10px] px-1 rounded-bl-sm rounded-tr-sm">+${images.length - 1}</span>` : ''}
                         </div>` :
-                    `<div class="w-12 h-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400"><i data-lucide="image" class="w-5 h-5"></i></div>`
+                    `<div class="w-12 h-12 rounded-lg bg-zinc-100 flex items-center justify-center text-zinc-400"><i data-lucide="image" class="w-5 h-5"></i></div>`
                 }
                 </td>
-                <td class="p-4 font-medium text-slate-900">${p.name}</td>
+                <td class="p-4 font-medium text-zinc-900">${p.name}</td>
                 <td class="p-4">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getCategoryColor(p.category)}">
                         ${p.category || 'General'}
@@ -287,14 +287,14 @@ export async function initStock(container, storeId = null) {
                         ${p.quantity}
                     </span>
                 </td>
-                <td class="p-4 text-sm text-slate-500">
+                <td class="p-4 text-sm text-zinc-500">
                     ${p.created_at ? new Date(p.created_at).toLocaleDateString() : '-'}
                 </td>
-                <td class="p-4 text-sm text-slate-500">
+                <td class="p-4 text-sm text-zinc-500">
                     ${p.updated_at ? new Date(p.updated_at).toLocaleString() : '-'}
                 </td>
                 <td class="p-4 text-right">
-                    <button class="menu-trigger p-2 rounded-full hover:bg-slate-200 text-slate-400 transition-colors" data-id="${p.id}">
+                    <button class="menu-trigger p-2 rounded-full hover:bg-zinc-200 text-zinc-400 transition-colors" data-id="${p.id}">
                         <i data-lucide="more-vertical" class="w-4 h-4"></i>
                     </button>
                 </td>
@@ -347,19 +347,19 @@ export async function initStock(container, storeId = null) {
 
     popupMenu = document.createElement('div');
     popupMenu.id = 'stock-action-menu';
-    popupMenu.className = 'hidden fixed z-[500] bg-white rounded-xl shadow-lg border border-slate-200 w-48 py-2';
+    popupMenu.className = 'hidden fixed z-[500] bg-white rounded-xl shadow-sm border border-zinc-200 w-48 py-2';
     popupMenu.style.transition = 'opacity 150ms ease, transform 150ms ease';
     popupMenu.innerHTML = `
-        <button id="stock-popup-view" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+        <button id="stock-popup-view" class="w-full text-left px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
             View Detail
         </button>
-        <div class="border-t border-slate-100 my-1"></div>
-        <button id="stock-popup-edit" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+        <div class="border-t border-zinc-100 my-1"></div>
+        <button id="stock-popup-edit" class="w-full text-left px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
             Edit Product
         </button>
-        <div class="border-t border-slate-100 my-1"></div>
+        <div class="border-t border-zinc-100 my-1"></div>
         <button id="stock-popup-delete" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
             Delete
@@ -532,7 +532,7 @@ export async function initStock(container, storeId = null) {
 
     function renderSerialInputs(count, existingSerials = []) {
         if (count <= 0) {
-            serialsContainer.innerHTML = '<p class="text-xs text-slate-400 italic">Enter quantity to add serial numbers.</p>';
+            serialsContainer.innerHTML = '<p class="text-xs text-zinc-400 italic">Enter quantity to add serial numbers.</p>';
             return;
         }
 
@@ -547,7 +547,7 @@ export async function initStock(container, storeId = null) {
             const val = valuesToUse[i] || '';
             html += `
                 <div class="flex items-center gap-2">
-                    <span class="text-xs text-slate-400 w-6">#${i + 1}</span>
+                    <span class="text-xs text-zinc-400 w-6">#${i + 1}</span>
                     <input type="text" class="serial-input input-field py-1 text-sm" placeholder="Serial No." value="${val}">
                 </div>
             `;
@@ -586,7 +586,7 @@ export async function initStock(container, storeId = null) {
         // Existing
         currentExistingImages.forEach((url, i) => {
             const div = document.createElement('div');
-            div.className = 'relative w-full h-20 rounded-lg overflow-hidden border border-slate-200 group bg-slate-100';
+            div.className = 'relative w-full h-20 rounded-lg overflow-hidden border border-zinc-200 group bg-zinc-100';
             div.innerHTML = `
                 <img src="${url}" class="w-full h-full object-cover">
                 <button type="button" class="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 z-20 shadow-sm transition-transform hover:scale-110" title="Remove">
@@ -609,14 +609,14 @@ export async function initStock(container, storeId = null) {
         // New Uploads
         currentUploadFiles.forEach((file, i) => {
             const div = document.createElement('div');
-            div.className = 'relative w-full h-20 rounded-lg overflow-hidden border border-slate-200 group bg-slate-100';
+            div.className = 'relative w-full h-20 rounded-lg overflow-hidden border border-zinc-200 group bg-zinc-100';
             // We use file reader just for viewing
             const reader = new FileReader();
             reader.onload = (e) => {
                 div.innerHTML = `
                     <img src="${e.target.result}" class="w-full h-full object-cover opacity-90">
                     <div class="absolute inset-0 flex items-center justify-center text-xs font-bold text-white bg-black/20 pointer-events-none">NEW</div>
-                    <button type="button" class="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 z-40 shadow-lg transition-transform hover:scale-110 flex items-center justify-center" title="Remove">
+                    <button type="button" class="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 z-40 shadow-sm transition-transform hover:scale-110 flex items-center justify-center" title="Remove">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </button>
                 `;
@@ -700,7 +700,7 @@ export async function initStock(container, storeId = null) {
             allInteractables.forEach(i => {
                 i.disabled = true;
                 if (i.tagName === 'INPUT' || i.tagName === 'TEXTAREA' || i.tagName === 'SELECT') {
-                    i.classList.add('bg-slate-100', 'text-slate-500');
+                    i.classList.add('bg-zinc-100', 'text-zinc-500');
                 }
             });
             if (saveBtn) saveBtn.classList.add('hidden');
@@ -744,17 +744,17 @@ export async function initStock(container, storeId = null) {
                     .limit(30)
                     .then(({ data: history, error }) => {
                         if (error || !history || history.length === 0) {
-                            historyList.innerHTML = '<div class="text-slate-400 italic">No history recorded yet.</div>';
+                            historyList.innerHTML = '<div class="text-zinc-400 italic">No history recorded yet.</div>';
                             return;
                         }
                         historyList.innerHTML = history.map(h => `
-                            <div class="flex items-start gap-2 py-1.5 border-b border-slate-50 last:border-0">
+                            <div class="flex items-start gap-2 py-1.5 border-b border-zinc-50 last:border-0">
                                 <span class="mt-0.5 w-2 h-2 rounded-full bg-indigo-400 flex-shrink-0"></span>
                                 <div class="flex-1">
-                                    <span class="font-medium text-slate-700">${h.change_type}</span>
-                                    ${h.old_value && h.new_value ? `<span class="text-slate-400"> · ${h.old_value} → ${h.new_value}</span>` : ''}
-                                    ${h.changed_by ? `<span class="text-slate-400"> · by ${h.changed_by}</span>` : ''}
-                                    <div class="text-slate-400 text-[10px] mt-0.5">${new Date(h.changed_at).toLocaleString()}</div>
+                                    <span class="font-medium text-zinc-700">${h.change_type}</span>
+                                    ${h.old_value && h.new_value ? `<span class="text-zinc-400"> · ${h.old_value} → ${h.new_value}</span>` : ''}
+                                    ${h.changed_by ? `<span class="text-zinc-400"> · by ${h.changed_by}</span>` : ''}
+                                    <div class="text-zinc-400 text-[10px] mt-0.5">${new Date(h.changed_at).toLocaleString()}</div>
                                 </div>
                             </div>
                         `).join('');
@@ -764,7 +764,7 @@ export async function initStock(container, storeId = null) {
             allInteractables.forEach(i => {
                 i.disabled = false;
                 if (i.tagName === 'INPUT' || i.tagName === 'TEXTAREA' || i.tagName === 'SELECT') {
-                    i.classList.remove('bg-slate-100', 'text-slate-500');
+                    i.classList.remove('bg-zinc-100', 'text-zinc-500');
                 }
             });
             if (saveBtn) saveBtn.classList.remove('hidden');
@@ -791,7 +791,7 @@ export async function initStock(container, storeId = null) {
         if (isView) {
             container.querySelectorAll('.serial-input').forEach(i => {
                 i.disabled = true;
-                i.classList.add('bg-slate-100');
+                i.classList.add('bg-zinc-100');
             });
         }
 
